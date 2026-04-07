@@ -80,7 +80,7 @@
         .char-container { position: relative; width: 100%; height: 320px; display: flex; justify-content: center; align-items: center; touch-action: none; }
         
         .bazzi-img {
-            max-width: 70%; max-height: 85%; object-fit: contain;
+            width: 180px; height: auto; object-fit: contain;
             filter: drop-shadow(0 15px 25px var(--char-shadow));
             transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-origin: center bottom; cursor: pointer; margin-right: 40px;
@@ -157,7 +157,7 @@
             <button class="call-manager-btn" onclick="openCallModal()">🚨 호출</button>
             <div class="welcome-header"><h3 id="welcome-user">000님, 반갑습니다!</h3><p>배찌를 눌러 긴장을 풀어보세요.</p></div>
             <div class="char-container">
-                <img src="character.png" alt="배찌" class="bazzi-img" id="bazzi" ontouchstart="handleTouch(event)" onmousedown="handleTouch(event)">
+                <img src="https://i.ibb.co/v4m6pX6/bazzi.png" alt="배찌" class="bazzi-img" id="bazzi" ontouchstart="handleTouch(event)" onmousedown="handleTouch(event)">
                 <div class="side-links">
                     <a href="https://blog.nexon.com/" target="_blank" class="logo-btn btn-tag">#</a>
                     <a href="https://www.youtube.com/user/NEXONKR" target="_blank" class="logo-btn btn-youtube"><div class="youtube-icon"></div></a>
