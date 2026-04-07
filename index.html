@@ -4,32 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NEXON INTERVIEW - Bazzi Care System</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        /* 리크루터님의 디자인 그대로 (CSS 생략 없이 전체 포함) */
+        /* 리크루터님의 소중한 디자인 (원본 그대로 유지) */
         :root { --primary-color: #4A90E2; --bg-gray: #f5f7fa; --char-shadow: rgba(255, 60, 60, 0.4); --emergency-color: #FF6B6B; --admin-dark: #1a1a1a; }
         body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: var(--bg-gray); font-family: 'Pretendard', sans-serif; touch-action: manipulation; overflow: hidden; }
         .mobile-container { width: 360px; height: 640px; background: white; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
         .screen { width: 100%; height: 100%; padding: 40px 24px; box-sizing: border-box; display: flex; flex-direction: column; transition: filter 0.3s ease; }
         .hidden { display: none !important; }
+        .blur { filter: blur(8px); pointer-events: none; }
         .header { margin-bottom: 35px; text-align: center; }
         .header h2 { color: #333; font-size: 24px; font-weight: 800; margin-bottom: 8px; cursor: pointer; user-select: none; }
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 600; }
-        input { width: 100%; padding: 15px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 16px; box-sizing: border-box; outline: none; background: white; }
+        input[type="text"], input[type="tel"], input[type="number"], input[type="password"] { width: 100%; padding: 15px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 16px; box-sizing: border-box; outline: none; background: white; }
         .submit-btn { margin-top: auto; width: 100%; padding: 18px; border: none; border-radius: 15px; background-color: var(--primary-color); color: white; font-size: 18px; font-weight: bold; cursor: pointer; }
         #admin-screen { background-color: var(--admin-dark); color: white; padding: 30px 20px; }
-        .admin-top h2 { font-size: 20px; font-weight: 800; color: var(--primary-color); }
-        .admin-menu { display: flex; gap: 15px; margin-bottom: 25px; margin-top: 20px; }
+        .admin-top { text-align: left; margin-bottom: 30px; }
+        .admin-top h2 { font-size: 20px; font-weight: 800; margin: 0; color: var(--primary-color); }
+        .admin-menu { display: flex; gap: 15px; margin-bottom: 25px; }
         .menu-item { flex: 1; padding: 12px; background: #2d2d2d; border-radius: 12px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; border: 1px solid #444; }
         .menu-item.active { background: var(--primary-color); border-color: var(--primary-color); }
-        .user-item { background: #2d2d2d; padding: 12px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .admin-content { flex: 1; overflow-y: auto; }
+        .admin-card { background: #2d2d2d; border-radius: 15px; padding: 20px; text-align: center; }
+        .file-label { display: block; background: #444; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .user-list { list-style: none; padding: 0; margin: 0; }
+        .user-item { background: #2d2d2d; padding: 12px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #3d3d3d; }
+        .user-info { text-align: left; }
+        .u-name { font-weight: bold; font-size: 14px; display: block; color: #fff; }
+        .u-time { font-size: 11px; color: #888; }
         .status-tag { font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold; }
-        .status-complete { background: #27ae60; color: white; }
         .status-waiting { background: #444; color: #888; }
+        .status-complete { background: #27ae60; color: white; }
+        .exit-btn { margin-top: 15px; padding: 15px; background: transparent; border: 1px solid #444; color: #777; border-radius: 12px; cursor: pointer; font-size: 13px; }
         #main-screen { background: radial-gradient(circle, #ffffff, #f0f4f8); align-items: center; text-align: center; position: relative; }
-        .bazzi-img { width: 180px; margin-top: 50px; filter: drop-shadow(0 15px 25px var(--char-shadow)); cursor: pointer; transition: 0.1s; }
+        .nexon-logo { position: absolute; top: 25px; left: 24px; font-size: 16px; font-weight: 900; color: #333; letter-spacing: -0.5px; }
+        .nexon-logo span { color: var(--primary-color); }
+        .call-manager-btn { position: absolute; top: 22px; right: 24px; padding: 6px 10px; background-color: white; border: 1.2px solid var(--emergency-color); border-radius: 20px; color: var(--emergency-color); font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 3px; }
+        .welcome-header { margin-top: 40px; margin-bottom: 20px; }
+        .welcome-header h3 { font-size: 20px; color: #333; margin: 0; font-weight: 800; }
+        .welcome-header p { font-size: 14px; color: #666; margin: 8px 0 0 0; line-height: 1.4; }
+        .char-container { position: relative; width: 100%; height: 320px; display: flex; justify-content: center; align-items: center; touch-action: none; }
+        .bazzi-img { width: 180px; height: auto; object-fit: contain; filter: drop-shadow(0 15px 25px var(--char-shadow)); transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-origin: center bottom; cursor: pointer; margin-right: 40px; }
+        .squash-head { transform: scale(1.15, 0.8) translateY(15px); }
+        @keyframes squishLeft { to { transform: skewX(-6deg) scaleX(1.05) translateX(8px); } }
+        .squish-left { animation: squishLeft 0.15s forwards; transform-origin: left center; }
+        @keyframes squishRight { to { transform: skewX(6deg) scaleX(1.05) translateX(-8px); } }
+        .squish-right { animation: squishRight 0.15s forwards; transform-origin: right center; }
+        @keyframes jumpAnim { 0% { transform: translateY(0); } 20% { transform: translateY(8px) scale(1.1, 0.9); } 50% { transform: translateY(-55px) scale(0.9, 1.1); } 100% { transform: translateY(0); } }
+        .jump-feet { animation: jumpAnim 0.45s ease-out; }
+        .side-links { position: absolute; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; }
+        .logo-btn { width: 32px; height: 32px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(0,0,0,0.1); text-decoration: none; overflow: hidden; }
+        .btn-tag { background-color: #333; color: white; font-size: 18px; font-weight: 900; }
+        .btn-youtube { background-color: white; border: 1px solid #eee; }
+        .youtube-icon { width: 18px; height: 13px; background-color: #FF0000; border-radius: 3px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .youtube-icon::after { content: ''; position: absolute; border-left: 5px solid white; border-top: 3.5px solid transparent; border-bottom: 3.5px solid transparent; margin-left: 1.5px; }
+        .guide-btn-area { margin-top: auto; width: 100%; padding-bottom: 10px; }
+        .guide-trigger-btn { width: 100%; padding: 16px; border: none; border-radius: 15px; background-color: #333; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 9999; }
+        .modal-content { width: 280px; background: white; border-radius: 24px; padding: 30px 20px; text-align: center; position: relative; }
+        .close-x-btn { position: absolute; top: 18px; right: 20px; font-size: 22px; font-weight: bold; color: #999; cursor: pointer; }
+        .modal-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background-color: var(--primary-color); color: white; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .slide-outer { position: relative; overflow: hidden; width: 100%; margin: 15px 0; }
+        .slide-container { display: flex; transition: transform 0.4s ease-in-out; width: 500%; }
+        .slide-page { width: 20%; flex-shrink: 0; padding: 10px 5px; box-sizing: border-box; min-height: 120px; display: flex; align-items: center; justify-content: center; }
+        .slide-page p { white-space: pre-wrap; line-height: 1.6; font-size: 15px; color: #444; font-weight: 600; margin: 0; word-break: keep-all; }
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: 1px solid #eee; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; z-index: 10; color: var(--primary-color); display: flex; align-items: center; justify-content: center; }
+        .prev-btn { left: -5px; } .next-btn { right: -5px; }
+        .dot-container { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: #ddd; transition: 0.3s; }
+        .dot.active { background: var(--primary-color); width: 15px; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -37,120 +84,164 @@
     <div class="mobile-container">
         <div id="login-screen" class="screen">
             <div class="header">
-                <h2 onclick="adminCounter()">NEXON INTERVIEW</h2>
+                <h2 id="admin-trigger" onclick="adminClickCounter()">NEXON INTERVIEW</h2>
                 <p>본인 확인을 위해 정보를 입력해 주세요.</p>
             </div>
-            <div class="input-group"><label>성함</label><input type="text" id="name" placeholder="성함"></div>
-            <div class="input-group"><label>휴대폰 번호</label><input type="tel" id="phone" placeholder="01000000000"></div>
-            <button class="submit-btn" onclick="checkIn()">출석 체크</button>
+            <div class="input-group"><label>성함</label><input type="text" id="name" placeholder="성함을 입력하세요"></div>
+            <div class="input-group"><label>휴대폰 번호</label><input type="tel" id="phone" placeholder="010-0000-0000"></div>
+            <button class="submit-btn" onclick="validateAttendance()">출석 체크</button>
         </div>
 
         <div id="admin-screen" class="screen hidden">
             <div class="admin-top"><h2>Admin Mode</h2></div>
             <div class="admin-menu">
-                <div class="menu-item active" id="m-up" onclick="tab('up')">파일 업로드</div>
-                <div class="menu-item" id="m-st" onclick="tab('st')">출석 현황</div>
+                <div class="menu-item active" id="menu-upload" onclick="switchAdminTab('upload')">파일 업로드</div>
+                <div class="menu-item" id="menu-status" onclick="switchAdminTab('status')">출석 현황</div>
             </div>
-            <div id="tab-up">
-                <label for="ex-up" style="display:block; background:#444; padding:30px; border-radius:15px; text-align:center; cursor:pointer;">엑셀 파일 업로드</label>
-                <input type="file" id="ex-up" accept=".xlsx, .xls" style="display:none">
+            <div id="tab-upload" class="admin-content">
+                <div class="admin-card">
+                    <p id="data-status" style="font-size:13px; color:#888">명단 파일을 업로드하세요.</p>
+                    <label for="excel-upload" class="file-label">파일 선택</label>
+                    <input type="file" id="excel-upload" accept=".xlsx, .xls" style="display:none">
+                </div>
             </div>
-            <div id="tab-st" class="hidden">
-                <ul id="user-list" style="list-style:none; padding:0;"></ul>
+            <div id="tab-status" class="admin-content hidden">
+                <ul class="user-list" id="admin-user-list"></ul>
             </div>
-            <button onclick="location.reload()" style="margin-top:auto; padding:15px; background:none; border:1px solid #444; color:#777; border-radius:10px;">나가기</button>
+            <button class="exit-btn" onclick="exitAdmin()">사용자 화면으로 돌아가기</button>
         </div>
 
         <div id="main-screen" class="screen hidden">
-            <h3 id="user-welcome" style="margin-top:50px;">님, 환영합니다!</h3>
-            <img src="https://i.ibb.co/v4m6pX6/bazzi.png" class="bazzi-img" onclick="this.style.transform='scale(1.1, 0.9)'; setTimeout(()=>this.style.transform='scale(1)', 100)">
-            <p style="margin-top:20px; color:#666;">배찌가 응원하고 있어요!</p>
+            <div class="nexon-logo">NEXON <span>Squishy</span></div>
+            <button class="call-manager-btn" onclick="openCallModal()">🚨 호출</button>
+            <div class="welcome-header"><h3 id="welcome-user">000님, 반갑습니다!</h3><p>배찌를 눌러 긴장을 풀어보세요.</p></div>
+            <div class="char-container">
+                <img src="https://i.ibb.co/v4m6pX6/bazzi.png" alt="배찌" class="bazzi-img" id="bazzi" ontouchstart="handleTouch(event)" onmousedown="handleTouch(event)">
+                <div class="side-links">
+                    <a href="https://blog.nexon.com/" target="_blank" class="logo-btn btn-tag">#</a>
+                    <a href="https://www.youtube.com/user/NEXONKR" target="_blank" class="logo-btn btn-youtube"><div class="youtube-icon"></div></a>
+                </div>
+            </div>
+            <div class="guide-btn-area"><button class="guide-trigger-btn" onclick="startGuide()">면접 안내사항 보기</button></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-content">
+            <div class="close-x-btn" id="closeX" onclick="closeByX()">✕</div>
+            <h3 id="modal-title">안내</h3>
+            <div id="slide-wrapper" class="hidden">
+                <div class="slide-outer">
+                    <button class="nav-btn prev-btn" onclick="moveSlide(-1)">❮</button>
+                    <button class="nav-btn next-btn" onclick="moveSlide(1)">❯</button>
+                    <div class="slide-container" id="slideContainer"></div>
+                </div>
+                <div class="dot-container" id="dotContainer"></div>
+            </div>
+            <div id="modal-input-area" class="hidden" style="margin: 15px 0;">
+                <input type="password" id="admin-password-input" placeholder="비밀번호 입력" style="text-align: center;">
+            </div>
+            <p id="modal-desc" style="color:#666; line-height:1.6; font-size:15px; word-break:keep-all; white-space: pre-wrap;"></p>
+            <button class="modal-btn" id="confirmBtn" onclick="closeModal()">확인</button>
         </div>
     </div>
 
     <script>
-        // 1. 설정 정보 (변수명 nexonDB로 완전 분리)
-        const S_URL = 'https://yccemofujngavovwecdo.supabase.co';
-        const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InljY2Vtb2Z1am5nYXZovndlY2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NDI0NTEsImV4cCI6MjA5MTExODQ1MX0.LjRqpR4n6As6A9TR5-8_CTachNMGiW2HrgMUsVDirp0';
-        
-        let nexonDB;
-        
-        // 페이지 로드 즉시 클라이언트 생성
-        window.addEventListener('DOMContentLoaded', () => {
-            if (window.supabase) {
-                nexonDB = window.supabase.createClient(S_URL, S_KEY);
-            } else {
-                alert("라이브러리 로드 실패. 인터넷 연결을 확인해주세요.");
-            }
+        // 수정 포인트: 이름을 nexonClient로 변경하여 라이브러리(window.supabase)와 충돌 방지
+        const supabaseUrl = 'https://yccemofujngavovwecdo.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InljY2Vtb2Z1am5nYXZvdndlY2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NDI0NTEsImV4cCI6MjA5MTExODQ1MX0.LjRqpR4n6As6A9TR5-8_CTachNMGiW2HrgMUsVDirp0';
+        const nexonClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentSlide = 0;
+        let clickCount = 0;
+        const guideMessages = ["면접은 약 1시간 동안\n진행될 예정입니다.", "면접 결과는 합격 여부와 관계없이\n2주 이내에 안내드립니다.", "면접 참가 확인서는 금일 중으로\n메일 발송될 예정입니다.", "면접 내용에 대한 녹음은\n엄격히 금지되어 있습니다.", "소지품을 잘 챙겨서\n입장해 주시기 바랍니다."];
+
+        function switchAdminTab(tab) {
+            document.getElementById('menu-upload').classList.toggle('active', tab === 'upload');
+            document.getElementById('menu-status').classList.toggle('active', tab === 'status');
+            document.getElementById('tab-upload').classList.toggle('hidden', tab !== 'upload');
+            document.getElementById('tab-status').classList.toggle('hidden', tab !== 'status');
+            if(tab === 'status') renderAdminList();
+        }
+
+        async function renderAdminList() {
+            const listEl = document.getElementById('admin-user-list');
+            const { data } = await nexonClient.from('interview_list').select('*').order('name');
+            if(!data || data.length === 0) { listEl.innerHTML = '<p style="text-align:center; font-size:13px; color:#555; margin-top:20px;">업로드된 명단이 없습니다.</p>'; return; }
+            listEl.innerHTML = data.map(u => `<li class="user-item"><div class="user-info"><span class="u-name">${u.name}</span><span class="u-time">${u.time || '시간미정'}</span></div><span class="status-tag ${u.checked_in ? 'status-complete' : 'status-waiting'}">${u.checked_in ? '출석 완료' : '대기 중'}</span></li>`).join('');
+        }
+
+        document.getElementById('excel-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                try {
+                    const data = new Uint8Array(event.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const rawData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+                    if (rawData.length === 0) return alert("데이터가 없습니다.");
+                    const keys = Object.keys(rawData[0]);
+                    const insertData = rawData.map(row => ({
+                        name: String(row[keys.find(k => k.includes('성함')||k.includes('이름'))] || '').trim(),
+                        phone: String(row[keys.find(k => k.includes('번호')||k.includes('연락처'))] || '').trim(),
+                        job: String(row[keys.find(k => k.includes('공고')||k.includes('포지션'))] || '').trim(),
+                        time: String(row[keys.find(k => k.includes('시간'))] || '').trim(),
+                        checked_in: false
+                    }));
+                    await nexonClient.from('interview_list').delete().neq('name', 'none');
+                    await nexonClient.from('interview_list').insert(insertData);
+                    alert("업로드 성공!");
+                    location.reload();
+                } catch (err) { alert("업로드 실패"); }
+            };
+            reader.readAsArrayBuffer(file);
         });
 
-        let c = 0;
-        function adminCounter() {
-            if(++c >= 5) {
-                const p = prompt("비밀번호");
-                if(p === "nexon123") {
+        async function validateAttendance() {
+            const nameInput = document.getElementById('name').value.trim();
+            const phoneInput = document.getElementById('phone').value.trim();
+            if(!nameInput || !phoneInput) return showPopup("알림", "정보를 입력하세요.");
+            const { data } = await nexonClient.from('interview_list').select('*').eq('name', nameInput);
+            const user = data?.find(u => u.phone.replace(/-/g,'') === phoneInput.replace(/-/g,''));
+            if(user) {
+                showPopup("출석 확인", `${user.name}님, 환영합니다!\n정보가 맞으시면 확인을 눌러주세요.`, async () => {
+                    await nexonClient.from('interview_list').update({ checked_in: true }).eq('id', user.id);
+                    goToMainScreen(user.name);
+                });
+            } else { alert("정보가 없습니다."); }
+        }
+
+        function adminClickCounter() {
+            if(++clickCount >= 5) {
+                const pass = prompt("관리자 비밀번호");
+                if(pass === "nexon123") {
                     document.getElementById('login-screen').classList.add('hidden');
                     document.getElementById('admin-screen').classList.remove('hidden');
                 }
-                c = 0;
+                clickCount = 0;
             }
         }
 
-        async function checkIn() {
-            const n = document.getElementById('name').value.trim();
-            const p = document.getElementById('phone').value.replace(/-/g,'').trim();
-            if(!n || !p) return alert("입력해주세요");
-
-            try {
-                const { data } = await nexonDB.from('interview_list').select('*').eq('name', n);
-                const user = data?.find(u => u.phone.replace(/-/g,'') === p);
-
-                if(user) {
-                    await nexonDB.from('interview_list').update({ checked_in: true }).eq('id', user.id);
-                    document.getElementById('login-screen').classList.add('hidden');
-                    document.getElementById('main-screen').classList.remove('hidden');
-                    document.getElementById('user-welcome').innerText = `${n}님, 환영합니다!`;
-                } else {
-                    alert("일치하는 정보가 없습니다.");
-                }
-            } catch(e) { alert("연결 오류"); }
+        function exitAdmin() { location.reload(); }
+        function goToMainScreen(name) { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('main-screen').classList.remove('hidden'); document.getElementById('welcome-user').innerText = `${name}님, 반갑습니다!`; }
+        function openCallModal() { alert("담당자를 호출했습니다."); }
+        function startGuide() {
+            currentSlide = 0;
+            document.getElementById('slide-wrapper').classList.remove('hidden');
+            document.getElementById('modal-desc').classList.add('hidden');
+            document.getElementById('slideContainer').innerHTML = guideMessages.map(m => `<div class="slide-page"><p>${m}</p></div>`).join('');
+            document.getElementById('dotContainer').innerHTML = guideMessages.map((_, i) => `<div class="dot ${i===0?'active':''}"></div>`).join('');
+            document.getElementById('infoModal').style.display = 'flex';
         }
-
-        function tab(t) {
-            document.getElementById('tab-up').classList.toggle('hidden', t === 'st');
-            document.getElementById('tab-st').classList.toggle('hidden', t === 'up');
-            document.getElementById('m-up').classList.toggle('active', t === 'up');
-            document.getElementById('m-st').classList.toggle('active', t === 'st');
-            if(t === 'st') render();
+        function moveSlide(dir) { currentSlide = (currentSlide + dir + 5) % 5; updateSlide(); }
+        function updateSlide() { document.getElementById('slideContainer').style.transform = `translateX(-${currentSlide * 20}%)`; document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide)); }
+        function showPopup(t, d, c) { document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerText = d; document.getElementById('infoModal').style.display = 'flex'; window.currentCallback = c; }
+        function closeModal() { if(window.currentCallback) window.currentCallback(); document.getElementById('infoModal').style.display = 'none'; }
+        function handleTouch(e) {
+            const bazzi = document.getElementById('bazzi');
+            bazzi.classList.add('squash-head');
+            setTimeout(() => bazzi.classList.remove('squash-head'), 200);
         }
-
-        async function render() {
-            const { data } = await nexonDB.from('interview_list').select('*').order('name');
-            document.getElementById('user-list').innerHTML = data.map(u => `
-                <li class="user-item">
-                    <span style="color:white">${u.name}</span>
-                    <span class="status-tag ${u.checked_in ? 'status-complete' : 'status-waiting'}">${u.checked_in ? '완료' : '대기'}</span>
-                </li>
-            `).join('');
-        }
-
-        document.getElementById('ex-up').addEventListener('change', function(e) {
-            const r = new FileReader();
-            r.onload = async (ev) => {
-                const wb = XLSX.read(new Uint8Array(ev.target.result), {type: 'array'});
-                const js = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-                const list = js.map(row => ({
-                    name: String(row['성함']||row['이름']||''),
-                    phone: String(row['연락처']||row['번호']||''),
-                    checked_in: false
-                }));
-                await nexonDB.from('interview_list').delete().neq('name', 'none');
-                await nexonDB.from('interview_list').insert(list);
-                alert("업로드 성공");
-                location.reload();
-            };
-            r.readAsArrayBuffer(e.target.files[0]);
-        });
     </script>
 </body>
 </html>
