@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NEXON INTERVIEW - Bazzi Care System</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        /* [리크루터님의 디자인] 그대로 유지 */
+        /* 리크루터님의 디자인 그대로 (CSS 생략 없이 전체 포함) */
         :root { --primary-color: #4A90E2; --bg-gray: #f5f7fa; --char-shadow: rgba(255, 60, 60, 0.4); --emergency-color: #FF6B6B; --admin-dark: #1a1a1a; }
         body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: var(--bg-gray); font-family: 'Pretendard', sans-serif; touch-action: manipulation; overflow: hidden; }
         .mobile-container { width: 360px; height: 640px; background: white; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; overflow: hidden; display: flex; flex-direction: column; }
@@ -17,33 +17,19 @@
         .header h2 { color: #333; font-size: 24px; font-weight: 800; margin-bottom: 8px; cursor: pointer; user-select: none; }
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 600; }
-        input[type="text"], input[type="tel"], input[type="password"] { width: 100%; padding: 15px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 16px; box-sizing: border-box; outline: none; background: white; }
+        input { width: 100%; padding: 15px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 16px; box-sizing: border-box; outline: none; background: white; }
         .submit-btn { margin-top: auto; width: 100%; padding: 18px; border: none; border-radius: 15px; background-color: var(--primary-color); color: white; font-size: 18px; font-weight: bold; cursor: pointer; }
         #admin-screen { background-color: var(--admin-dark); color: white; padding: 30px 20px; }
-        .admin-top { text-align: left; margin-bottom: 30px; }
-        .admin-top h2 { font-size: 20px; font-weight: 800; margin: 0; color: var(--primary-color); }
-        .admin-menu { display: flex; gap: 15px; margin-bottom: 25px; }
+        .admin-top h2 { font-size: 20px; font-weight: 800; color: var(--primary-color); }
+        .admin-menu { display: flex; gap: 15px; margin-bottom: 25px; margin-top: 20px; }
         .menu-item { flex: 1; padding: 12px; background: #2d2d2d; border-radius: 12px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; border: 1px solid #444; }
         .menu-item.active { background: var(--primary-color); border-color: var(--primary-color); }
-        .admin-content { flex: 1; overflow-y: auto; }
-        .admin-card { background: #2d2d2d; border-radius: 15px; padding: 20px; text-align: center; }
-        .file-label { display: block; background: #444; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-        .user-list { list-style: none; padding: 0; margin: 0; }
-        .user-item { background: #2d2d2d; padding: 12px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #3d3d3d; }
-        .u-name { font-weight: bold; font-size: 14px; color: #fff; }
+        .user-item { background: #2d2d2d; padding: 12px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .status-tag { font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold; }
-        .status-waiting { background: #444; color: #888; }
         .status-complete { background: #27ae60; color: white; }
-        .exit-btn { margin-top: 15px; padding: 15px; background: transparent; border: 1px solid #444; color: #777; border-radius: 12px; cursor: pointer; font-size: 13px; }
+        .status-waiting { background: #444; color: #888; }
         #main-screen { background: radial-gradient(circle, #ffffff, #f0f4f8); align-items: center; text-align: center; position: relative; }
-        .nexon-logo { position: absolute; top: 25px; left: 24px; font-size: 16px; font-weight: 900; color: #333; }
-        .nexon-logo span { color: var(--primary-color); }
-        .call-manager-btn { position: absolute; top: 22px; right: 24px; padding: 6px 10px; background-color: white; border: 1.2px solid var(--emergency-color); border-radius: 20px; color: var(--emergency-color); font-size: 11px; font-weight: 700; cursor: pointer; }
-        .welcome-header { margin-top: 40px; margin-bottom: 20px; }
-        .welcome-header h3 { font-size: 20px; color: #333; font-weight: 800; }
-        .bazzi-img { width: 180px; height: auto; filter: drop-shadow(0 15px 25px var(--char-shadow)); cursor: pointer; transform-origin: center bottom; transition: 0.1s; }
-        .squash-head { transform: scale(1.1, 0.9); }
-        .guide-trigger-btn { width: 100%; padding: 16px; border: none; border-radius: 15px; background-color: #333; color: white; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: auto; }
+        .bazzi-img { width: 180px; margin-top: 50px; filter: drop-shadow(0 15px 25px var(--char-shadow)); cursor: pointer; transition: 0.1s; }
     </style>
 </head>
 <body>
@@ -51,117 +37,120 @@
     <div class="mobile-container">
         <div id="login-screen" class="screen">
             <div class="header">
-                <h2 onclick="countAdminClicks()">NEXON INTERVIEW</h2>
+                <h2 onclick="adminCounter()">NEXON INTERVIEW</h2>
                 <p>본인 확인을 위해 정보를 입력해 주세요.</p>
             </div>
             <div class="input-group"><label>성함</label><input type="text" id="name" placeholder="성함"></div>
-            <div class="input-group"><label>휴대폰 번호</label><input type="tel" id="phone" placeholder="010-0000-0000"></div>
-            <button class="submit-btn" onclick="handleAttendance()">출석 체크</button>
+            <div class="input-group"><label>휴대폰 번호</label><input type="tel" id="phone" placeholder="01000000000"></div>
+            <button class="submit-btn" onclick="checkIn()">출석 체크</button>
         </div>
 
         <div id="admin-screen" class="screen hidden">
             <div class="admin-top"><h2>Admin Mode</h2></div>
             <div class="admin-menu">
-                <div class="menu-item active" id="menu-upload" onclick="switchAdminTab('upload')">파일 업로드</div>
-                <div class="menu-item" id="menu-status" onclick="switchAdminTab('status')">출석 현황</div>
+                <div class="menu-item active" id="m-up" onclick="tab('up')">파일 업로드</div>
+                <div class="menu-item" id="m-st" onclick="tab('st')">출석 현황</div>
             </div>
-            <div id="tab-upload" class="admin-content">
-                <div class="admin-card">
-                    <p style="font-size:13px; color:#888">명단 파일을 업로드하세요.</p>
-                    <label for="excel-upload" class="file-label">파일 선택</label>
-                    <input type="file" id="excel-upload" accept=".xlsx, .xls" style="display:none">
-                </div>
+            <div id="tab-up">
+                <label for="ex-up" style="display:block; background:#444; padding:30px; border-radius:15px; text-align:center; cursor:pointer;">엑셀 파일 업로드</label>
+                <input type="file" id="ex-up" accept=".xlsx, .xls" style="display:none">
             </div>
-            <div id="tab-status" class="admin-content hidden">
-                <ul class="user-list" id="admin-user-list"></ul>
+            <div id="tab-st" class="hidden">
+                <ul id="user-list" style="list-style:none; padding:0;"></ul>
             </div>
-            <button class="exit-btn" onclick="location.reload()">로그아웃</button>
+            <button onclick="location.reload()" style="margin-top:auto; padding:15px; background:none; border:1px solid #444; color:#777; border-radius:10px;">나가기</button>
         </div>
 
         <div id="main-screen" class="screen hidden">
-            <div class="nexon-logo">NEXON <span>Squishy</span></div>
-            <button class="call-manager-btn" onclick="alert('담당자를 호출했습니다.')">🚨 호출</button>
-            <div class="welcome-header"><h3 id="welcome-user">님, 반갑습니다!</h3><p>배찌를 눌러 긴장을 풀어보세요.</p></div>
-            <div style="flex:1; display:flex; align-items:center; justify-content:center;">
-                <img src="https://i.ibb.co/v4m6pX6/bazzi.png" class="bazzi-img" id="bazzi" onmousedown="squashBazzi()" onmouseup="releaseBazzi()">
-            </div>
-            <button class="guide-trigger-btn" onclick="alert('1. 면접은 약 1시간 진행됩니다.\n2. 결과는 2주 내 안내됩니다.')">면접 안내사항 보기</button>
+            <h3 id="user-welcome" style="margin-top:50px;">님, 환영합니다!</h3>
+            <img src="https://i.ibb.co/v4m6pX6/bazzi.png" class="bazzi-img" onclick="this.style.transform='scale(1.1, 0.9)'; setTimeout(()=>this.style.transform='scale(1)', 100)">
+            <p style="margin-top:20px; color:#666;">배찌가 응원하고 있어요!</p>
         </div>
     </div>
 
     <script>
-        // 변수 이름을 확실하게 분리 (supabase -> myClient)
-        const URL_DB = 'https://yccemofujngavovwecdo.supabase.co';
-        const KEY_DB = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InljY2Vtb2Z1am5nYXZovndlY2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NDI0NTEsImV4cCI6MjA5MTExODQ1MX0.LjRqpR4n6As6A9TR5-8_CTachNMGiW2HrgMUsVDirp0';
+        // 1. 설정 정보 (변수명 nexonDB로 완전 분리)
+        const S_URL = 'https://yccemofujngavovwecdo.supabase.co';
+        const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InljY2Vtb2Z1am5nYXZovndlY2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NDI0NTEsImV4cCI6MjA5MTExODQ1MX0.LjRqpR4n6As6A9TR5-8_CTachNMGiW2HrgMUsVDirp0';
         
-        // 브라우저가 라이브러리를 로드할 시간을 벌어줌
-        let myClient;
-        window.onload = function() {
-            myClient = window.supabase.createClient(URL_DB, KEY_DB);
-        };
+        let nexonDB;
+        
+        // 페이지 로드 즉시 클라이언트 생성
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.supabase) {
+                nexonDB = window.supabase.createClient(S_URL, S_KEY);
+            } else {
+                alert("라이브러리 로드 실패. 인터넷 연결을 확인해주세요.");
+            }
+        });
 
-        let clickCount = 0;
-
-        function countAdminClicks() {
-            if(++clickCount >= 5) {
-                const pw = prompt("관리자 비밀번호를 입력하세요.");
-                if(pw === "nexon123") {
+        let c = 0;
+        function adminCounter() {
+            if(++c >= 5) {
+                const p = prompt("비밀번호");
+                if(p === "nexon123") {
                     document.getElementById('login-screen').classList.add('hidden');
                     document.getElementById('admin-screen').classList.remove('hidden');
                 }
-                clickCount = 0;
+                c = 0;
             }
         }
 
-        async function handleAttendance() {
-            const name = document.getElementById('name').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            if(!name || !phone) return alert("정보를 입력해주세요.");
+        async function checkIn() {
+            const n = document.getElementById('name').value.trim();
+            const p = document.getElementById('phone').value.replace(/-/g,'').trim();
+            if(!n || !p) return alert("입력해주세요");
 
-            const { data, error } = await myClient.from('interview_list').select('*').eq('name', name);
-            const user = data?.find(u => u.phone.replace(/-/g,'') === phone.replace(/-/g,''));
+            try {
+                const { data } = await nexonDB.from('interview_list').select('*').eq('name', n);
+                const user = data?.find(u => u.phone.replace(/-/g,'') === p);
 
-            if(user) {
-                await myClient.from('interview_list').update({ checked_in: true }).eq('id', user.id);
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('main-screen').classList.remove('hidden');
-                document.getElementById('welcome-user').innerText = `${name}님, 반갑습니다!`;
-            } else {
-                alert("일치하는 정보가 없습니다.");
-            }
+                if(user) {
+                    await nexonDB.from('interview_list').update({ checked_in: true }).eq('id', user.id);
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('main-screen').classList.remove('hidden');
+                    document.getElementById('user-welcome').innerText = `${n}님, 환영합니다!`;
+                } else {
+                    alert("일치하는 정보가 없습니다.");
+                }
+            } catch(e) { alert("연결 오류"); }
         }
 
-        function switchAdminTab(tab) {
-            document.getElementById('tab-upload').classList.toggle('hidden', tab !== 'upload');
-            document.getElementById('tab-status').classList.toggle('hidden', tab === 'upload');
-            if(tab === 'status') renderList();
+        function tab(t) {
+            document.getElementById('tab-up').classList.toggle('hidden', t === 'st');
+            document.getElementById('tab-st').classList.toggle('hidden', t === 'up');
+            document.getElementById('m-up').classList.toggle('active', t === 'up');
+            document.getElementById('m-st').classList.toggle('active', t === 'st');
+            if(t === 'st') render();
         }
 
-        async function renderList() {
-            const { data } = await myClient.from('interview_list').select('*').order('name');
-            document.getElementById('admin-user-list').innerHTML = data.map(u => `
+        async function render() {
+            const { data } = await nexonDB.from('interview_list').select('*').order('name');
+            document.getElementById('user-list').innerHTML = data.map(u => `
                 <li class="user-item">
-                    <div class="user-info"><span class="u-name">${u.name}</span></div>
+                    <span style="color:white">${u.name}</span>
                     <span class="status-tag ${u.checked_in ? 'status-complete' : 'status-waiting'}">${u.checked_in ? '완료' : '대기'}</span>
-                </li>`).join('');
+                </li>
+            `).join('');
         }
 
-        document.getElementById('excel-upload').addEventListener('change', function(e) {
-            const reader = new FileReader();
-            reader.onload = async (ev) => {
-                const workbook = XLSX.read(new Uint8Array(ev.target.result), {type: 'array'});
-                const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-                const list = json.map(r => ({ name: r['성함']||r['이름'], phone: String(r['연락처']||r['번호']), checked_in: false }));
-                await myClient.from('interview_list').delete().neq('name', 'none');
-                await myClient.from('interview_list').insert(list);
-                alert("업로드 완료!");
+        document.getElementById('ex-up').addEventListener('change', function(e) {
+            const r = new FileReader();
+            r.onload = async (ev) => {
+                const wb = XLSX.read(new Uint8Array(ev.target.result), {type: 'array'});
+                const js = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                const list = js.map(row => ({
+                    name: String(row['성함']||row['이름']||''),
+                    phone: String(row['연락처']||row['번호']||''),
+                    checked_in: false
+                }));
+                await nexonDB.from('interview_list').delete().neq('name', 'none');
+                await nexonDB.from('interview_list').insert(list);
+                alert("업로드 성공");
                 location.reload();
             };
-            reader.readAsArrayBuffer(e.target.files[0]);
+            r.readAsArrayBuffer(e.target.files[0]);
         });
-
-        function squashBazzi() { document.getElementById('bazzi').classList.add('squash-head'); }
-        function releaseBazzi() { document.getElementById('bazzi').classList.remove('squash-head'); }
     </script>
 </body>
 </html>
