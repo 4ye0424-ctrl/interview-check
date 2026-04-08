@@ -70,9 +70,9 @@
         .settings-btn { position: absolute; top: 25px; right: 20px; font-size: 18px; color: var(--primary-color); cursor: pointer; z-index: 10; }
 
         /* 새로고침 버튼 스타일 추가 */
-        .refresh-container { display: flex; justify-content: flex-end; margin-bottom: 10px; }
-        .refresh-btn { background: none; border: 1px solid #555; color: #aaa; padding: 4px 10px; border-radius: 8px; font-size: 11px; cursor: pointer; transition: 0.2s; }
-        .refresh-btn:active { background: #444; color: #fff; }
+        .refresh-area { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+        .refresh-btn { background: #333; border: 1px solid #444; color: #eee; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: 600; }
+        .refresh-btn:active { background: #444; }
 
         #main-screen { background: radial-gradient(circle, #ffffff, #f0f4f8); align-items: center; text-align: center; position: relative; }
         .nexon-logo { position: absolute; top: 25px; left: 24px; font-size: 16px; font-weight: 900; color: #333; letter-spacing: -0.5px; }
@@ -150,7 +150,7 @@
                 </div>
             </div>
             <div id="tab-status" class="admin-content hidden">
-                <div class="refresh-container"><button class="refresh-btn" onclick="renderAdminList()">🔄 새로고침</button></div>
+                <div class="refresh-area"><button class="refresh-btn" onclick="renderAdminList()">🔄 새로고침</button></div>
                 <ul class="user-list" id="admin-user-list"></ul>
             </div>
             <button class="exit-btn" onclick="exitAdmin()">사용자 화면으로 돌아가기</button>
