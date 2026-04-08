@@ -69,6 +69,11 @@
         .exit-btn { margin-top: 15px; padding: 15px; background: transparent; border: 1px solid #444; color: #777; border-radius: 12px; cursor: pointer; font-size: 13px; }
         .settings-btn { position: absolute; top: 25px; right: 20px; font-size: 18px; color: var(--primary-color); cursor: pointer; z-index: 10; }
 
+        /* 새로고침 버튼 스타일 추가 */
+        .refresh-container { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+        .refresh-btn { background: none; border: 1px solid #555; color: #aaa; padding: 4px 10px; border-radius: 8px; font-size: 11px; cursor: pointer; transition: 0.2s; }
+        .refresh-btn:active { background: #444; color: #fff; }
+
         #main-screen { background: radial-gradient(circle, #ffffff, #f0f4f8); align-items: center; text-align: center; position: relative; }
         .nexon-logo { position: absolute; top: 25px; left: 24px; font-size: 16px; font-weight: 900; color: #333; letter-spacing: -0.5px; }
         .nexon-logo span { color: var(--primary-color); }
@@ -77,7 +82,6 @@
         .welcome-header h3 { font-size: 20px; color: #333; margin: 0; font-weight: 800; }
         .welcome-header p { font-size: 14px; color: #666; margin: 8px 0 0 0; line-height: 1.4; }
         
-        /* --- [원본 배찌 모션 CSS 복구] --- */
         .char-container { position: relative; width: 100%; height: 320px; display: flex; justify-content: center; align-items: center; touch-action: none; }
         .bazzi-img {
             max-width: 70%; max-height: 85%; object-fit: contain;
@@ -146,6 +150,7 @@
                 </div>
             </div>
             <div id="tab-status" class="admin-content hidden">
+                <div class="refresh-container"><button class="refresh-btn" onclick="renderAdminList()">🔄 새로고침</button></div>
                 <ul class="user-list" id="admin-user-list"></ul>
             </div>
             <button class="exit-btn" onclick="exitAdmin()">사용자 화면으로 돌아가기</button>
@@ -291,7 +296,6 @@
         function exitAdmin() { document.getElementById('admin-screen').classList.add('hidden'); document.getElementById('login-screen').classList.remove('hidden'); }
         function goToMainScreen(name) { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('main-screen').classList.remove('hidden'); document.getElementById('welcome-user').innerText = `${name}님, 반갑습니다!`; }
 
-        /* --- [원본 호출 팝업 로직 복구] --- */
         function openCallModal() {
             showPopup("담당자 호출", "도움이 필요하시거나 문의 사항이\n있으시면 편하게 불러주세요!", () => {
                 setTimeout(() => showPopup("전송 완료", "담당자에게 알림이 전송되었습니다.", null), 100);
@@ -325,7 +329,6 @@
         function closeModal() { const cb = window.currentCallback; window.currentCallback = null; document.getElementById('infoModal').style.display = 'none'; if(cb) cb(); }
         function closeByX() { document.getElementById('infoModal').style.display = 'none'; document.getElementById('modal-input-area').classList.add('hidden'); }
 
-        /* --- [원본 배찌 터치 로직 복구] --- */
         function handleTouch(event) {
             if(event.type === 'touchstart') event.preventDefault();
             const bazzi = document.getElementById('bazzi');
