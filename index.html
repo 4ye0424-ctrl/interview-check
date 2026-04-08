@@ -196,15 +196,13 @@
             if(tab === 'status') renderAdminList();
         }
 
-        // DB에서 실시간으로 명단 가져오기
         async function renderAdminList() {
             const listEl = document.getElementById('admin-user-list');
-            const { data, error } = await _supabase.from('interview_list').select('*');
+            const { data, error } = await _supabase.from('interview_list').select('*').order('created_at', { ascending: true });
             if(error || !data || data.length === 0) { listEl.innerHTML = '<p style="text-align:center; font-size:13px; color:#555; margin-top:20px;">업로드된 명단이 없습니다.</p>'; return; }
             listEl.innerHTML = data.map(u => `<li class="user-item"><div class="user-info"><span class="u-name">${u.user_name}</span><span class="u-time">${u.interview_time || '시간미정'}</span></div><span class="status-tag ${u.checked_in ? 'status-complete' : 'status-waiting'}">${u.checked_in ? '출석 완료' : '대기 중'}</span></li>`).join('');
         }
 
-        // 엑셀 업로드 시 DB에 영구 저장
         document.getElementById('excel-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             const reader = new FileReader();
@@ -223,7 +221,6 @@
                         checked_in: false
                     }));
 
-                    // 기존 데이터 삭제 후 새 데이터 삽입
                     await _supabase.from('interview_list').delete().neq('user_name', '');
                     const { error } = await _supabase.from('interview_list').insert(formattedData);
 
@@ -235,13 +232,11 @@
             reader.readAsArrayBuffer(file);
         });
 
-        // 출석 체크 시 DB 조회 (핵심!)
         async function validateAttendance() {
             const nameInput = document.getElementById('name').value.trim();
             const phoneInput = document.getElementById('phone').value.trim();
             if(!nameInput || !phoneInput) { showPopup("알림", "정보를 모두 입력해 주세요!"); return; }
 
-            // DB에서 해당 사용자 찾기
             const { data, error } = await _supabase
                 .from('interview_list')
                 .select('*')
@@ -252,7 +247,11 @@
             const user = data.find(u => u.phone_number.replace(/-/g,'') === phoneInput.replace(/-/g,''));
 
             if(user) {
-                showPopup("출석 확인", `성함: ${user.user_name}\n면접 시간: ${user.interview_time}\n\n위 정보가 맞습니까?`, async () => { 
+                // 공고명(job_title)을 포함하여 팝업 출력
+                const job = user.job_title || "확인 불가";
+                const time = user.interview_time || "안내된 시간";
+
+                showPopup("출석 확인", `성함: ${user.user_name}\n지원 공고: ${job}\n면접 시간: ${time}\n\n위 정보가 맞습니까?`, async () => { 
                     await _supabase.from('interview_list').update({ checked_in: true }).eq('id', user.id);
                     goToMainScreen(user.user_name); 
                 });
