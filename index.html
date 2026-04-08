@@ -56,11 +56,9 @@
         .menu-item { flex: 1; padding: 12px; background: #2d2d2d; border-radius: 12px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; border: 1px solid #444; }
         .menu-item.active { background: var(--primary-color); border-color: var(--primary-color); }
         
-        /* 출석 통계 바 추가 */
         .status-summary { background: #3d3d3d; padding: 12px; border-radius: 10px; margin-bottom: 15px; font-size: 13px; line-height: 1.5; }
         .status-summary b { color: var(--primary-color); }
 
-        /* 설정 톱니바퀴 (관리자 전용) */
         .settings-btn { position: absolute; top: 25px; right: 20px; font-size: 18px; color: var(--primary-color); cursor: pointer; z-index: 10; }
 
         .admin-content { flex: 1; overflow-y: auto; }
@@ -83,17 +81,26 @@
         .welcome-header { margin-top: 40px; margin-bottom: 20px; }
         .welcome-header h3 { font-size: 20px; color: #333; margin: 0; font-weight: 800; }
         .welcome-header p { font-size: 14px; color: #666; margin: 8px 0 0 0; line-height: 1.4; }
+        
         .char-container { position: relative; width: 100%; height: 320px; display: flex; justify-content: center; align-items: center; touch-action: none; }
         
         .bazzi-img {
             max-width: 70%; max-height: 85%; object-fit: contain;
             filter: drop-shadow(0 15px 25px var(--char-shadow));
-            transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.1s ease-out;
             transform-origin: center bottom; cursor: pointer; margin-right: 40px;
         }
-        .squash-head { transform: scale(1.15, 0.8) translateY(15px); }
-        @keyframes jumpAnim { 0% { transform: translateY(0); } 20% { transform: translateY(8px) scale(1.1, 0.9); } 50% { transform: translateY(-55px) scale(0.9, 1.1); } 100% { transform: translateY(0); } }
-        .jump-feet { animation: jumpAnim 0.45s ease-out; }
+
+        /* --- 배찌 애니메이션 --- */
+        @keyframes jump-anim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-60px) scale(0.9, 1.1); } }
+        @keyframes squash-anim { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.2, 0.7); } }
+        @keyframes tilt-left { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-15deg) translateX(-10px); } }
+        @keyframes tilt-right { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(15deg) translateX(10px); } }
+
+        .motion-up { animation: jump-anim 0.3s ease-out; }
+        .motion-down { animation: squash-anim 0.3s ease-out; }
+        .motion-left { animation: tilt-left 0.3s ease-out; }
+        .motion-right { animation: tilt-right 0.3s ease-out; }
 
         .side-links { position: absolute; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; }
         .logo-btn { width: 32px; height: 32px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(0,0,0,0.1); text-decoration: none; overflow: hidden; }
@@ -198,12 +205,11 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InljY2Vtb2Z1am5nYXZvdndlY2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NDI0NTEsImV4cCI6MjA5MTExODQ1MX0.LjRqpR4n6As6A9TR5-8_CTachNMGiW2HrgMUsVDirp0';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let adminPassword = "1234"; // 초기 비번 1234
+        let adminPassword = "1234";
         let currentSlide = 0;
         let clickCount = 0;
         const guideMessages = ["면접은 약 1시간 동안\n진행될 예정입니다.", "면접 결과는 합격 여부와 관계없이\n2주 이내에 안내드립니다.", "면접 참가 확인서는 금일 중으로\n메일 발송될 예정입니다.", "면접 내용에 대한 녹음은\n엄격히 금지되어 있습니다.", "소지품을 잘 챙겨서\n입장해 주시기 바랍니다."];
 
-        // 시작 시 저장된 설정 불러오기
         async function loadSettings() {
             const { data } = await _supabase.from('interview_list').select('*').eq('user_name', 'SYSTEM_CONFIG').single();
             if(data) adminPassword = data.phone_number;
@@ -221,12 +227,9 @@
         async function renderAdminList() {
             const listEl = document.getElementById('admin-user-list');
             const { data, error } = await _supabase.from('interview_list').select('*').neq('user_name', 'SYSTEM_CONFIG').order('created_at', { ascending: true });
-            
-            // 날짜 및 인원수 업데이트
             const now = new Date();
             document.getElementById('today-date').innerText = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
             document.getElementById('total-count').innerText = data ? data.length : 0;
-
             if(error || !data || data.length === 0) { listEl.innerHTML = '<p style="text-align:center; font-size:13px; color:#555; margin-top:20px;">업로드된 명단이 없습니다.</p>'; return; }
             listEl.innerHTML = data.map(u => `<li class="user-item"><div class="user-info"><span class="u-name">${u.user_name}</span><span class="u-time">${u.interview_time || '시간미정'}</span></div><span class="status-tag ${u.checked_in ? 'status-complete' : 'status-waiting'}">${u.checked_in ? '출석 완료' : '대기 중'}</span></li>`).join('');
         }
@@ -251,7 +254,7 @@
                     const { error } = await _supabase.from('interview_list').insert(formattedData);
                     if (error) throw error;
                     document.getElementById('data-status').innerText = `${formattedData.length}명의 데이터가 DB에 동기화됨`;
-                    showPopup("성공", "DB 동기화 완료! 이제 후보자 폰에서도 확인 가능합니다.");
+                    showPopup("성공", "DB 동기화 완료!");
                 } catch (err) { showPopup("오류", "DB 저장 실패: " + err.message); }
             };
             reader.readAsArrayBuffer(file);
@@ -267,11 +270,12 @@
             if(user) {
                 const job = user.job_title || "확인 불가";
                 const time = user.interview_time || "안내된 시간";
+                // 버튼 문구를 '확인'으로 변경함
                 showPopup("출석 확인", `성함: ${user.user_name}\n지원 공고: ${job}\n면접 시간: ${time}\n\n위 정보가 맞습니까?`, async () => { 
                     await _supabase.from('interview_list').update({ checked_in: true }).eq('id', user.id);
                     goToMainScreen(user.user_name); 
                 });
-                document.getElementById('confirmBtn').innerText = "네, 맞습니다";
+                document.getElementById('confirmBtn').innerText = "확인";
             } else { showPopup("실패", "일치하는 정보가 없습니다."); }
         }
 
@@ -305,7 +309,7 @@
 
         function exitAdmin() { location.reload(); }
         function goToMainScreen(name) { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('main-screen').classList.remove('hidden'); document.getElementById('welcome-user').innerText = `${name}님, 반갑습니다!`; }
-        function openCallModal() { showPopup("담당자 호출", "알림이 전송되었습니다.", null); }
+        function openCallModal() { showPopup("담당자 호출", "알림이 전송되었습니다.", null); document.getElementById('confirmBtn').innerText = "확인"; }
         function startGuide() {
             currentSlide = 0; document.getElementById('modal-title').innerText = "💡안내 사항💡";
             document.getElementById('modal-desc').classList.add('hidden'); document.getElementById('confirmBtn').classList.add('hidden');
@@ -316,16 +320,29 @@
         }
         function moveSlide(dir) { currentSlide = (currentSlide + dir + guideMessages.length) % guideMessages.length; updateSlide(); }
         function updateSlide() { document.getElementById('slideContainer').style.transform = `translateX(-${currentSlide * 20}%)`; document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide)); }
-        function showPopup(t, d, c) { window.currentCallback = c; document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerText = d; document.getElementById('modal-desc').classList.remove('hidden'); document.getElementById('slide-wrapper').classList.add('hidden'); document.getElementById('confirmBtn').classList.remove('hidden'); document.getElementById('infoModal').style.display = 'flex'; }
+        function showPopup(t, d, c) { window.currentCallback = c; document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerText = d; document.getElementById('modal-desc').classList.remove('hidden'); document.getElementById('slide-wrapper').classList.add('hidden'); document.getElementById('confirmBtn').classList.remove('hidden'); document.getElementById('confirmBtn').innerText = "확인"; document.getElementById('infoModal').style.display = 'flex'; }
         function closeModal() { const cb = window.currentCallback; document.getElementById('infoModal').style.display = 'none'; if(cb) cb(); window.currentCallback = null; }
         function closeByX() { document.getElementById('infoModal').style.display = 'none'; }
+        
         function handleTouch(event) {
             const bazzi = document.getElementById('bazzi');
-            bazzi.classList.remove('squash-head', 'jump-feet');
-            void bazzi.offsetWidth;
-            const relY = ( (event.type === 'touchstart' ? event.touches[0].clientY : event.clientY) - bazzi.getBoundingClientRect().top) / bazzi.getBoundingClientRect().height;
-            if (relY < 0.3) bazzi.classList.add('squash-head');
-            else if (relY > 0.7) bazzi.classList.add('jump-feet');
+            // 클래스 즉시 제거 후 offsetWidth로 리플로우 발생시켜 애니메이션 초기화 (연타 가능)
+            bazzi.classList.remove('motion-up', 'motion-down', 'motion-left', 'motion-right');
+            void bazzi.offsetWidth; 
+
+            const rect = bazzi.getBoundingClientRect();
+            const clientX = (event.type === 'touchstart') ? event.touches[0].clientX : event.clientX;
+            const clientY = (event.type === 'touchstart') ? event.touches[0].clientY : event.clientY;
+            
+            const relX = (clientX - rect.left) / rect.width;
+            const relY = (clientY - rect.top) / rect.height;
+
+            // 터치 위치에 따른 모션 분기
+            if (relY < 0.3) bazzi.classList.add('motion-up');
+            else if (relY > 0.7) bazzi.classList.add('motion-down');
+            else if (relX < 0.3) bazzi.classList.add('motion-left');
+            else if (relX > 0.7) bazzi.classList.add('motion-right');
+            else bazzi.classList.add('motion-up'); // 중앙 클릭 시 기본 점프
         }
     </script>
 </body>
