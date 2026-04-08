@@ -21,20 +21,18 @@
             font-family: 'Pretendard', sans-serif; touch-action: manipulation; overflow: hidden;
         }
 
+        /* [수정] 모바일 화면 잘림 방지: max-height와 유연한 크기 조절 */
         .mobile-container {
-            width: 360px; height: 640px; background: white;
-            border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%; max-width: 360px; 
+            height: 100vh; max-height: 640px; 
+            background: white;
+            border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             position: relative; overflow: hidden; display: flex; flex-direction: column;
         }
 
         input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
+        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
 
         .screen { width: 100%; height: 100%; padding: 40px 24px; box-sizing: border-box; display: flex; flex-direction: column; transition: filter 0.3s ease; }
         .hidden { display: none !important; }
@@ -56,11 +54,9 @@
         .menu-item { flex: 1; padding: 12px; background: #2d2d2d; border-radius: 12px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; border: 1px solid #444; }
         .menu-item.active { background: var(--primary-color); border-color: var(--primary-color); }
         
-        /* 출석 통계 바 추가 */
         .status-summary { background: #3d3d3d; padding: 12px; border-radius: 10px; margin-bottom: 15px; font-size: 13px; line-height: 1.5; }
         .status-summary b { color: var(--primary-color); }
 
-        /* 설정 톱니바퀴 (관리자 전용) */
         .settings-btn { position: absolute; top: 25px; right: 20px; font-size: 18px; color: var(--primary-color); cursor: pointer; z-index: 10; }
 
         .admin-content { flex: 1; overflow-y: auto; }
@@ -80,31 +76,33 @@
         .nexon-logo { position: absolute; top: 25px; left: 24px; font-size: 16px; font-weight: 900; color: #333; letter-spacing: -0.5px; }
         .nexon-logo span { color: var(--primary-color); }
         .call-manager-btn { position: absolute; top: 22px; right: 24px; padding: 6px 10px; background-color: white; border: 1.2px solid var(--emergency-color); border-radius: 20px; color: var(--emergency-color); font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 3px; }
-        .welcome-header { margin-top: 40px; margin-bottom: 20px; }
+        .welcome-header { margin-top: 40px; margin-bottom: 10px; }
         .welcome-header h3 { font-size: 20px; color: #333; margin: 0; font-weight: 800; }
         .welcome-header p { font-size: 14px; color: #666; margin: 8px 0 0 0; line-height: 1.4; }
-        .char-container { position: relative; width: 100%; height: 320px; display: flex; justify-content: center; align-items: center; touch-action: none; }
+        
+        /* [수정] 캐릭터 영역 유연하게 조정 */
+        .char-container { position: relative; width: 100%; flex: 1; display: flex; justify-content: center; align-items: center; touch-action: none; min-height: 0; }
         
         .bazzi-img {
-            max-width: 70%; max-height: 85%; object-fit: contain;
+            max-width: 65%; max-height: 85%; object-fit: contain;
             filter: drop-shadow(0 15px 25px var(--char-shadow));
             transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-origin: center bottom; cursor: pointer; margin-right: 40px;
+            transform-origin: center bottom; cursor: pointer;
         }
         .squash-head { transform: scale(1.15, 0.8) translateY(15px); }
         @keyframes jumpAnim { 0% { transform: translateY(0); } 20% { transform: translateY(8px) scale(1.1, 0.9); } 50% { transform: translateY(-55px) scale(0.9, 1.1); } 100% { transform: translateY(0); } }
         .jump-feet { animation: jumpAnim 0.45s ease-out; }
 
-        .side-links { position: absolute; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; }
+        .side-links { position: absolute; right: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 5; }
         .logo-btn { width: 32px; height: 32px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(0,0,0,0.1); text-decoration: none; overflow: hidden; }
         .btn-tag { background-color: #333; color: white; font-size: 18px; font-weight: 900; }
         .btn-youtube { background-color: white; border: 1px solid #eee; }
         .youtube-icon { width: 18px; height: 13px; background-color: #FF0000; border-radius: 3px; position: relative; display: flex; align-items: center; justify-content: center; }
         .youtube-icon::after { content: ''; position: absolute; border-left: 5px solid white; border-top: 3.5px solid transparent; border-bottom: 3.5px solid transparent; margin-left: 1.5px; }
-        .guide-btn-area { margin-top: auto; width: 100%; padding-bottom: 10px; }
+        .guide-btn-area { width: 100%; padding-bottom: 20px; }
         .guide-trigger-btn { width: 100%; padding: 16px; border: none; border-radius: 15px; background-color: #333; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
 
-        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 9999; border-radius: 30px; }
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 9999; }
         .modal-content { width: 280px; background: white; border-radius: 24px; padding: 30px 20px; text-align: center; position: relative; }
         .close-x-btn { position: absolute; top: 18px; right: 20px; font-size: 22px; font-weight: bold; color: #999; cursor: pointer; }
         .modal-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background-color: var(--primary-color); color: white; font-weight: bold; cursor: pointer; margin-top: 15px; }
@@ -135,7 +133,6 @@
 
         <div id="admin-screen" class="screen hidden">
             <div class="settings-btn" onclick="openSettings()">⚙️</div>
-
             <div class="admin-top"><h2>Admin Mode</h2></div>
             <div class="admin-menu">
                 <div class="menu-item active" id="menu-upload" onclick="switchAdminTab('upload')">파일 업로드</div>
@@ -198,12 +195,11 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InljY2Vtb2Z1am5nYXZvdndlY2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NDI0NTEsImV4cCI6MjA5MTExODQ1MX0.LjRqpR4n6As6A9TR5-8_CTachNMGiW2HrgMUsVDirp0';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let adminPassword = "1234"; // 초기 비번 1234
+        let adminPassword = "1234";
         let currentSlide = 0;
         let clickCount = 0;
         const guideMessages = ["면접은 약 1시간 동안\n진행될 예정입니다.", "면접 결과는 합격 여부와 관계없이\n2주 이내에 안내드립니다.", "면접 참가 확인서는 금일 중으로\n메일 발송될 예정입니다.", "면접 내용에 대한 녹음은\n엄격히 금지되어 있습니다.", "소지품을 잘 챙겨서\n입장해 주시기 바랍니다."];
 
-        // 시작 시 저장된 설정 불러오기
         async function loadSettings() {
             const { data } = await _supabase.from('interview_list').select('*').eq('user_name', 'SYSTEM_CONFIG').single();
             if(data) adminPassword = data.phone_number;
@@ -221,12 +217,9 @@
         async function renderAdminList() {
             const listEl = document.getElementById('admin-user-list');
             const { data, error } = await _supabase.from('interview_list').select('*').neq('user_name', 'SYSTEM_CONFIG').order('created_at', { ascending: true });
-            
-            // 날짜 및 인원수 업데이트
             const now = new Date();
             document.getElementById('today-date').innerText = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
             document.getElementById('total-count').innerText = data ? data.length : 0;
-
             if(error || !data || data.length === 0) { listEl.innerHTML = '<p style="text-align:center; font-size:13px; color:#555; margin-top:20px;">업로드된 명단이 없습니다.</p>'; return; }
             listEl.innerHTML = data.map(u => `<li class="user-item"><div class="user-info"><span class="u-name">${u.user_name}</span><span class="u-time">${u.interview_time || '시간미정'}</span></div><span class="status-tag ${u.checked_in ? 'status-complete' : 'status-waiting'}">${u.checked_in ? '출석 완료' : '대기 중'}</span></li>`).join('');
         }
@@ -251,7 +244,7 @@
                     const { error } = await _supabase.from('interview_list').insert(formattedData);
                     if (error) throw error;
                     document.getElementById('data-status').innerText = `${formattedData.length}명의 데이터가 DB에 동기화됨`;
-                    showPopup("성공", "DB 동기화 완료! 이제 후보자 폰에서도 확인 가능합니다.");
+                    showPopup("성공", "DB 동기화 완료!");
                 } catch (err) { showPopup("오류", "DB 저장 실패: " + err.message); }
             };
             reader.readAsArrayBuffer(file);
@@ -267,6 +260,7 @@
             if(user) {
                 const job = user.job_title || "확인 불가";
                 const time = user.interview_time || "안내된 시간";
+                // [복구] 출석 시에만 "네, 맞습니다" 버튼 텍스트 설정
                 showPopup("출석 확인", `성함: ${user.user_name}\n지원 공고: ${job}\n면접 시간: ${time}\n\n위 정보가 맞습니까?`, async () => { 
                     await _supabase.from('interview_list').update({ checked_in: true }).eq('id', user.id);
                     goToMainScreen(user.user_name); 
@@ -305,7 +299,12 @@
 
         function exitAdmin() { location.reload(); }
         function goToMainScreen(name) { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('main-screen').classList.remove('hidden'); document.getElementById('welcome-user').innerText = `${name}님, 반갑습니다!`; }
-        function openCallModal() { showPopup("담당자 호출", "알림이 전송되었습니다.", null); }
+        
+        // [복구] 담당자 호출 시 "확인" 버튼으로 정상 출력되도록 수정
+        function openCallModal() { 
+            showPopup("담당자 호출", "담당자에게 알림이 전송되었습니다.\n잠시만 기다려 주세요.", null); 
+        }
+
         function startGuide() {
             currentSlide = 0; document.getElementById('modal-title').innerText = "💡안내 사항💡";
             document.getElementById('modal-desc').classList.add('hidden'); document.getElementById('confirmBtn').classList.add('hidden');
@@ -316,14 +315,27 @@
         }
         function moveSlide(dir) { currentSlide = (currentSlide + dir + guideMessages.length) % guideMessages.length; updateSlide(); }
         function updateSlide() { document.getElementById('slideContainer').style.transform = `translateX(-${currentSlide * 20}%)`; document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide)); }
-        function showPopup(t, d, c) { window.currentCallback = c; document.getElementById('modal-title').innerText = t; document.getElementById('modal-desc').innerText = d; document.getElementById('modal-desc').classList.remove('hidden'); document.getElementById('slide-wrapper').classList.add('hidden'); document.getElementById('confirmBtn').classList.remove('hidden'); document.getElementById('infoModal').style.display = 'flex'; }
+        
+        // [수정] 팝업 열 때 기본 버튼 텍스트를 "확인"으로 초기화
+        function showPopup(t, d, c) { 
+            window.currentCallback = c; 
+            document.getElementById('modal-title').innerText = t; 
+            document.getElementById('modal-desc').innerText = d; 
+            document.getElementById('confirmBtn').innerText = "확인"; 
+            document.getElementById('modal-desc').classList.remove('hidden'); 
+            document.getElementById('slide-wrapper').classList.add('hidden'); 
+            document.getElementById('confirmBtn').classList.remove('hidden'); 
+            document.getElementById('infoModal').style.display = 'flex'; 
+        }
+
         function closeModal() { const cb = window.currentCallback; document.getElementById('infoModal').style.display = 'none'; if(cb) cb(); window.currentCallback = null; }
         function closeByX() { document.getElementById('infoModal').style.display = 'none'; }
         function handleTouch(event) {
             const bazzi = document.getElementById('bazzi');
             bazzi.classList.remove('squash-head', 'jump-feet');
             void bazzi.offsetWidth;
-            const relY = ( (event.type === 'touchstart' ? event.touches[0].clientY : event.clientY) - bazzi.getBoundingClientRect().top) / bazzi.getBoundingClientRect().height;
+            const touchY = event.type === 'touchstart' ? event.touches[0].clientY : event.clientY;
+            const relY = (touchY - bazzi.getBoundingClientRect().top) / bazzi.getBoundingClientRect().height;
             if (relY < 0.3) bazzi.classList.add('squash-head');
             else if (relY > 0.7) bazzi.classList.add('jump-feet');
         }
