@@ -23,18 +23,13 @@
         }
 
         .mobile-container {
-            width: 100%; height: 100%; max-width: 500px; /* PC 대응용 최대폭 */
+            width: 100%; height: 100%; max-width: 500px;
             background: white; position: relative; overflow: hidden; display: flex; flex-direction: column;
         }
 
         input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
+        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
 
         .screen { 
             width: 100%; height: 100%; 
@@ -44,8 +39,9 @@
         .hidden { display: none !important; }
         .blur { filter: blur(8px); pointer-events: none; }
 
-        .header { margin-bottom: 35px; text-align: center; }
-        .header h2 { color: #333; font-size: 24px; font-weight: 800; margin-bottom: 8px; cursor: pointer; user-select: none; }
+        /* 입구 화면 레이아웃 */
+        #login-screen .header { margin-top: 20px; margin-bottom: 40px; text-align: center; }
+        #login-screen .header h2 { color: #333; font-size: 24px; font-weight: 800; margin-bottom: 8px; cursor: pointer; }
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 600; }
         input[type="text"], input[type="tel"], input[type="number"], input[type="password"] {
@@ -53,6 +49,7 @@
         }
         .submit-btn { margin-top: auto; width: 100%; padding: 18px; border: none; border-radius: 15px; background-color: var(--primary-color); color: white; font-size: 18px; font-weight: bold; cursor: pointer; }
 
+        /* 어드민 화면 */
         #admin-screen { background-color: var(--admin-dark); color: white; padding: 30px 20px; position: relative; }
         .admin-top { text-align: left; margin-bottom: 30px; }
         .admin-top h2 { font-size: 20px; font-weight: 800; margin: 0; color: var(--primary-color); }
@@ -75,8 +72,8 @@
 
         .refresh-area { display: flex; justify-content: flex-end; margin-bottom: 10px; }
         .refresh-btn { background: #333; border: 1px solid #444; color: #eee; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: 600; }
-        .refresh-btn:active { background: #444; }
 
+        /* 메인 화면 레이아웃 (세로 확장형) */
         #main-screen { background: radial-gradient(circle, #ffffff, #f0f4f8); align-items: center; text-align: center; position: relative; }
         
         .nexon-logo { 
@@ -87,44 +84,53 @@
         
         .call-manager-btn { 
             position: absolute; top: calc(env(safe-area-inset-top, 20px) + 2px); right: 24px; 
-            padding: 6px 10px; background-color: white; border: 1.2px solid var(--emergency-color); 
-            border-radius: 20px; color: var(--emergency-color); font-size: 11px; font-weight: 700; 
+            padding: 7px 12px; background-color: white; border: 1.2px solid var(--emergency-color); 
+            border-radius: 20px; color: var(--emergency-color); font-size: 12px; font-weight: 700; 
             cursor: pointer; display: flex; align-items: center; gap: 3px; z-index: 100;
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.15);
         }
 
-        .welcome-header { margin-top: 40px; margin-bottom: 20px; }
-        .welcome-header h3 { font-size: 20px; color: #333; margin: 0; font-weight: 800; }
-        .welcome-header p { font-size: 14px; color: #666; margin: 8px 0 0 0; line-height: 1.4; }
+        .welcome-header { margin-top: 60px; margin-bottom: 20px; }
+        .welcome-header h3 { font-size: 22px; color: #333; margin: 0; font-weight: 800; }
+        .welcome-header p { font-size: 15px; color: #666; margin: 10px 0 0 0; line-height: 1.4; }
         
-        .char-container { position: relative; width: 100%; flex: 1; display: flex; justify-content: center; align-items: center; touch-action: none; min-height: 0; }
+        /* 세로 공간을 꽉 채우는 컨테이너 */
+        .char-container { 
+            position: relative; width: 100%; flex: 1; 
+            display: flex; justify-content: center; align-items: center; 
+            touch-action: none; min-height: 0; margin: 20px 0;
+        }
         .bazzi-img {
-            max-width: 70%; max-height: 85%; object-fit: contain;
-            filter: drop-shadow(0 15px 25px var(--char-shadow));
+            max-width: 85%; max-height: 90%; object-fit: contain;
+            filter: drop-shadow(0 15px 30px var(--char-shadow));
             transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-origin: center bottom; cursor: pointer; margin-right: 40px;
         }
+        
+        .side-links { position: absolute; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 5; }
+        .logo-btn { width: 38px; height: 38px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-decoration: none; overflow: hidden; }
+        .btn-tag { background-color: #333; color: white; font-size: 20px; font-weight: 900; }
+        .btn-youtube { background-color: white; border: 1px solid #eee; }
+        .youtube-icon { width: 22px; height: 16px; background-color: #FF0000; border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .youtube-icon::after { content: ''; position: absolute; border-left: 6px solid white; border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; margin-left: 2px; }
+        
+        .guide-btn-area { margin-top: auto; width: 100%; padding-bottom: calc(env(safe-area-inset-bottom, 10px) + 15px); }
+        .guide-trigger-btn { width: 100%; padding: 18px; border: none; border-radius: 15px; background-color: #333; color: white; font-weight: bold; font-size: 16px; cursor: pointer; }
+
+        /* 애니메이션 효과 */
         .squash-head { transform: scale(1.15, 0.8) translateY(15px); }
         @keyframes squishLeft { to { transform: skewX(-6deg) scaleX(1.05) translateX(8px); } }
         .squish-left { animation: squishLeft 0.15s forwards; transform-origin: left center; }
         @keyframes squishRight { to { transform: skewX(6deg) scaleX(1.05) translateX(-8px); } }
         .squish-right { animation: squishRight 0.15s forwards; transform-origin: right center; }
-        @keyframes jumpAnim { 0% { transform: translateY(0); } 20% { transform: translateY(8px) scale(1.1, 0.9); } 50% { transform: translateY(-55px) scale(0.9, 1.1); } 100% { transform: translateY(0); } }
+        @keyframes jumpAnim { 0% { transform: translateY(0); } 20% { transform: translateY(8px) scale(1.1, 0.9); } 50% { transform: translateY(-70px) scale(0.9, 1.1); } 100% { transform: translateY(0); } }
         .jump-feet { animation: jumpAnim 0.45s ease-out; }
 
-        .side-links { position: absolute; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; }
-        .logo-btn { width: 32px; height: 32px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 8px rgba(0,0,0,0.1); text-decoration: none; overflow: hidden; }
-        .btn-tag { background-color: #333; color: white; font-size: 18px; font-weight: 900; }
-        .btn-youtube { background-color: white; border: 1px solid #eee; }
-        .youtube-icon { width: 18px; height: 13px; background-color: #FF0000; border-radius: 3px; position: relative; display: flex; align-items: center; justify-content: center; }
-        .youtube-icon::after { content: ''; position: absolute; border-left: 5px solid white; border-top: 3.5px solid transparent; border-bottom: 3.5px solid transparent; margin-left: 1.5px; }
-        
-        .guide-btn-area { margin-top: auto; width: 100%; padding-bottom: calc(env(safe-area-inset-bottom, 10px) + 10px); }
-        .guide-trigger-btn { width: 100%; padding: 16px; border: none; border-radius: 15px; background-color: #333; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
-
+        /* 모달 스타일 */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 9999; }
-        .modal-content { width: 280px; background: white; border-radius: 24px; padding: 30px 20px; text-align: center; position: relative; }
+        .modal-content { width: 300px; background: white; border-radius: 24px; padding: 30px 20px; text-align: center; position: relative; }
         .close-x-btn { position: absolute; top: 18px; right: 20px; font-size: 22px; font-weight: bold; color: #999; cursor: pointer; }
-        .modal-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background-color: var(--primary-color); color: white; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .modal-btn { width: 100%; padding: 15px; border: none; border-radius: 12px; background-color: var(--primary-color); color: white; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 15px; }
 
         .slide-outer { position: relative; overflow: hidden; width: 100%; margin: 15px 0; }
         .slide-container { display: flex; transition: transform 0.4s ease-in-out; width: 500%; }
@@ -174,7 +180,12 @@
         <div id="main-screen" class="screen hidden">
             <div class="nexon-logo">NEXON <span>Squishy</span></div>
             <button class="call-manager-btn" onclick="openCallModal()">🚨 호출</button>
-            <div class="welcome-header"><h3 id="welcome-user">000님, 반갑습니다!</h3><p>배찌를 눌러 긴장을 풀어보세요.</p></div>
+            
+            <div class="welcome-header">
+                <h3 id="welcome-user">000님, 반갑습니다!</h3>
+                <p>배찌를 눌러 긴장을 풀어보세요.</p>
+            </div>
+
             <div class="char-container">
                 <img src="character.png" alt="배찌" class="bazzi-img" id="bazzi" ontouchstart="handleTouch(event)" onmousedown="handleTouch(event)">
                 <div class="side-links">
@@ -182,7 +193,10 @@
                     <a href="https://www.youtube.com/user/NEXONKR" target="_blank" class="logo-btn btn-youtube"><div class="youtube-icon"></div></a>
                 </div>
             </div>
-            <div class="guide-btn-area"><button class="guide-trigger-btn" onclick="startGuide()">면접 안내사항 보기</button></div>
+
+            <div class="guide-btn-area">
+                <button class="guide-trigger-btn" onclick="startGuide()">면접 안내사항 보기</button>
+            </div>
         </div>
     </div>
 
@@ -228,20 +242,15 @@
 
         function checkInterviewTime() {
             if (!currentUserInterviewTime || alertTriggered) return;
-            
             const now = new Date();
             const timeMatch = currentUserInterviewTime.match(/(\d{1,2})[:시]\s*(\d{2})?/);
             if (!timeMatch) return;
-
             let targetHour = parseInt(timeMatch[1]);
             let targetMin = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
-            
             const targetDate = new Date();
             targetDate.setHours(targetHour, targetMin, 0);
-
             const diffMs = targetDate - now;
             const diffMin = diffMs / (1000 * 60);
-
             if (diffMin > 0 && diffMin <= 5) {
                 alertTriggered = true;
                 showPopup("대기 안내", "면접 시작 5분 전입니다.\n소지품을 챙겨 대기해 주세요!");
@@ -259,17 +268,14 @@
         async function renderAdminList() {
             const listEl = document.getElementById('admin-user-list');
             const { data, error } = await _supabase.from('interview_list').select('*').neq('user_name', 'SYSTEM_CONFIG').order('created_at', { ascending: true });
-            
             if(error || !data || data.length === 0) { 
                 listEl.innerHTML = '<p style="text-align:center; font-size:13px; color:#555; margin-top:20px;">업로드된 명단이 없습니다.</p>'; 
                 return; 
             }
-            
             const sortedData = [...data].sort((a, b) => {
                 if (a.checked_in === b.checked_in) return 0;
                 return a.checked_in ? 1 : -1; 
             });
-
             listEl.innerHTML = sortedData.map(u => `
                 <li class="user-item">
                     <div class="user-info">
@@ -319,7 +325,6 @@
                 const job = user.job_title || "지원 공고";
                 const time = user.interview_time || "안내된 시간";
                 currentUserInterviewTime = time; 
-                
                 showPopup("출석 확인", `성함: ${user.user_name}\n지원 공고: ${job}\n면접 시간: ${time}\n\n위 정보가 맞습니까?`, async () => { 
                     await _supabase.from('interview_list').update({ checked_in: true }).eq('id', user.id);
                     goToMainScreen(user.user_name); 
