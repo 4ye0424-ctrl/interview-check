@@ -60,7 +60,7 @@ width: 100%; padding: 15px; border: 1px solid #e0e0e0; border-radius: 12px; font
 .admin-card { background: #2d2d2d; border-radius: 15px; padding: 20px; text-align: center; }
 .file-label { display: block; background: #444; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 15px; }
 .user-list { list-style: none; padding: 0; margin: 0; }
-.time-group-header { font-size: 12px; color: var(--primary-color); font-weight: bold; margin: 15px 0 8px 5px; border-left: 3px solid var(--primary-color); padding-left: 8px; }
+.time-group-header { font-size: 12px; color: var(--primary-color); font-weight: bold; margin: 15px 0 8px 5px; border-left: 3px solid var(--primary-color); padding-left: 8px; background: rgba(74, 144, 226, 0.1); padding: 5px 8px; border-radius: 4px; }
 .user-item { background: #2d2d2d; padding: 12px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #3d3d3d; }
 .user-info { text-align: left; }
 .u-name { font-weight: bold; font-size: 14px; display: block; color: #fff; }
@@ -138,7 +138,7 @@ transform-origin: center bottom; cursor: pointer;
 <div id="admin-screen" class="screen hidden">
 <div class="settings-btn" onclick="openSettings()">⚙️</div>
 <div class="admin-top"><h2>Admin Mode</h2></div>
-<div class="admin-summary" id="admin-summary-text">오늘 날짜: - | 총 인원: 0명</div>
+<div class="admin-summary" id="admin-summary-text">오늘 날짜: - | 면접 인원: 0명</div>
 <div class="admin-menu">
 <div class="menu-item active" id="menu-upload" onclick="switchAdminTab('upload')">파일 업로드</div>
 <div class="menu-item" id="menu-status" onclick="switchAdminTab('status')">출석 현황</div>
@@ -211,7 +211,6 @@ let clickCount = 0;
 let currentUserInterviewTime = null;
 let alertTriggered = false;
 
-// 1. 구어체로 변경된 안내 메시지
 const guideMessages = [
     "오늘 면접은 약 1시간 정도\n진행될 예정이에요!",
     "면접 결과는 합격 여부와 상관없이\n2주 안에 메일로 안내해 드릴게요.",
@@ -259,22 +258,21 @@ const { data, error } = await _supabase.from('interview_list').select('*').neq('
 
 if(error || !data || data.length === 0) {
 listEl.innerHTML = '<p style="text-align:center; font-size:13px; color:#555; margin-top:20px;">업로드된 명단이 없습니다.</p>';
-summaryEl.innerText = `오늘 날짜: ${new Date().toLocaleDateString()} | 총 인원: 0명`;
+summaryEl.innerText = `오늘 날짜: ${new Date().toLocaleDateString()} | 면접 인원: 0명`;
 return;
 }
 
-summaryEl.innerText = `오늘 날짜: ${new Date().toLocaleDateString()} | 총 인원: ${data.length}명`;
+summaryEl.innerText = `오늘 날짜: ${new Date().toLocaleDateString()} | 면접 인원: ${data.length}명`;
 
-// 3. 시간대별 그룹핑 및 상세 정보 표시
 let html = "";
 let lastTime = "";
 data.forEach(u => {
+    // 시간대별 타임테이블 카테고리 생성
     if(u.interview_time !== lastTime) {
-        html += `<div class="time-group-header">${u.interview_time} 면접조</div>`;
+        html += `<div class="time-group-header">🕒 ${u.interview_time} 타임테이블</div>`;
         lastTime = u.interview_time;
     }
     
-    // 출석 완료 시 시간 기록 (updated_at 활용)
     const checkInTimeText = u.checked_in && u.checkin_at ? `<span class="u-checktime">[${u.checkin_at} 체크인]</span>` : '';
     
     html += `
