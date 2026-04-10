@@ -100,11 +100,11 @@ transform-origin: center bottom; cursor: pointer;
 
 .bottom-interaction-area { margin-top: auto; width: 100%; padding-bottom: 15px; display: flex; flex-direction: column; gap: 12px; }
 .guide-trigger-btn { width: 100%; padding: 16px; border: none; border-radius: 15px; background-color: #333; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
-.external-links-row { display: flex; gap: 10px; width: 100%; }
-.link-item { flex: 1; background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.link-item span { font-size: 12px; font-weight: 700; color: #444; }
+.external-links-row { display: flex; gap: 10px; width: 100%; justify-content: center; align-items: center; }
+.link-item { flex: 1; height: 44px; background: white; border: 1px solid #e0e0e0; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; }
+.link-item span { font-size: 12px; font-weight: 700; color: #444; white-space: nowrap; }
 .link-tag { font-size: 16px; font-weight: 900; color: var(--primary-color); }
-.youtube-mini-icon { width: 16px; height: 12px; background-color: #FF0000; border-radius: 3px; position: relative; display: flex; align-items: center; justify-content: center; }
+.youtube-mini-icon { width: 16px; height: 12px; background-color: #FF0000; border-radius: 3px; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .youtube-mini-icon::after { content: ''; position: absolute; border-left: 4px solid white; border-top: 3px solid transparent; border-bottom: 3px solid transparent; margin-left: 1px; }
 
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 9999; }
