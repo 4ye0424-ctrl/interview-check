@@ -100,10 +100,10 @@ transform-origin: center bottom; cursor: pointer;
 
 .bottom-interaction-area { margin-top: auto; width: 100%; padding-bottom: 15px; display: flex; flex-direction: column; gap: 12px; }
 .guide-trigger-btn { width: 100%; padding: 16px; border: none; border-radius: 15px; background-color: #333; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
-.external-links-row { display: flex; gap: 10px; width: 100%; justify-content: center; align-items: center; }
-.link-item { flex: 1; height: 44px; background: white; border: 1px solid #e0e0e0; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; }
-.link-item span { font-size: 12px; font-weight: 700; color: #444; white-space: nowrap; }
-.link-tag { font-size: 16px; font-weight: 900; color: var(--primary-color); }
+.external-links-row { display: flex; gap: 10px; width: 100%; justify-content: center; }
+.link-item { flex: 1; height: 44px; background: white; border: 1px solid #e0e0e0; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.link-item span { font-size: 12px; font-weight: 700; color: #444; margin-top: -1px; } /* 텍스트 위치 미세 조정 */
+.link-tag { font-size: 16px; font-weight: 900; color: var(--primary-color); display: flex; align-items: center; }
 .youtube-mini-icon { width: 16px; height: 12px; background-color: #FF0000; border-radius: 3px; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .youtube-mini-icon::after { content: ''; position: absolute; border-left: 4px solid white; border-top: 3px solid transparent; border-bottom: 3px solid transparent; margin-left: 1px; }
 
@@ -171,17 +171,17 @@ transform-origin: center bottom; cursor: pointer;
 <img src="character.png" alt="배찌" class="bazzi-img" id="bazzi" ontouchstart="handleTouch(event)" onmousedown="handleTouch(event)">
 </div>
 <div class="bottom-interaction-area">
-    <button class="guide-trigger-btn" onclick="startGuide()">면접 안내사항 보기</button>
-    <div class="external-links-row">
-        <a href="https://blog.nexon.com/" target="_blank" class="link-item">
-            <span class="link-tag">#</span>
-            <span>넥슨 소식</span>
-        </a>
-        <a href="https://www.youtube.com/user/NEXONKR" target="_blank" class="link-item">
-            <div class="youtube-mini-icon"></div>
-            <span>넥슨 유튜브</span>
-      </a>
-    </div>
+    <button class="guide-trigger-btn" onclick="startGuide()">면접 안내사항 보기</button>
+    <div class="external-links-row">
+        <a href="https://blog.nexon.com/" target="_blank" class="link-item">
+            <span class="link-tag">#</span>
+            <span>넥슨 소식</span>
+        </a>
+        <a href="https://www.youtube.com/user/NEXONKR" target="_blank" class="link-item">
+            <div class="youtube-mini-icon"></div>
+            <span>넥슨 유튜브</span>
+      </a>
+    </div>
 </div>
 </div>
 </div>
@@ -218,11 +218,11 @@ let currentUserInterviewTime = null;
 let alertTriggered = false;
 
 const guideMessages = [
-    "오늘 면접은 약 1시간 정도\n진행될 예정이에요!",
-    "면접 결과는 합격 여부와 상관없이\n2주 안으로 안내해 드릴게요.",
-    "면접 참가 확인서는 오늘 중으로\n메일로 발송해 드릴 예정이에요.",
-    "보안을 위해 면접 내용을 녹음하는 건\n엄격히 금지되어 있으니\n양해 부탁드려요.",
-    "소지품은 챙겨서\n입장 준비를 해주세요."
+    "오늘 면접은 약 1시간 정도\n진행될 예정이에요!",
+    "면접 결과는 합격 여부와 상관없이\n2주 안으로 안내해 드릴게요.",
+    "면접 참가 확인서는 오늘 중으로\n메일로 발송해 드릴 예정이에요.",
+    "보안을 위해 면접 내용을 녹음하는 건\n엄격히 금지되어 있으니\n양해 부탁드려요.",
+    "소지품은 챙겨서\n입장 준비를 해주세요."
 ];
 
 async function loadSettings() {
