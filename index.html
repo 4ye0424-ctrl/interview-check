@@ -99,8 +99,8 @@ transform-origin: center bottom; cursor: pointer;
 
 .bottom-interaction-area { margin-top: auto; width: 100%; padding-bottom: 15px; display: flex; flex-direction: column; gap: 12px; }
 .guide-trigger-btn { width: 100%; padding: 16px; border: none; border-radius: 15px; background-color: #333; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
-.external-links-row { display: flex; gap: 10px; width: 100%; padding: 0 24px; }
-.link-item { flex: 1; background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.external-links-row { display: flex; gap: 10px; width: 100%; justify-content: center; /* 버튼 전체 중앙 정렬 */ }
+.link-item { flex: 1; max-width: calc(50% - 5px); /* 반반 너비 확보 */ background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 .link-item span { font-size: 12px; font-weight: 700; color: #444; }
 .link-tag { font-size: 16px; font-weight: 900; color: var(--primary-color); }
 .youtube-mini-icon { width: 16px; height: 12px; background-color: #FF0000; border-radius: 3px; position: relative; display: flex; align-items: center; justify-content: center; }
@@ -165,17 +165,17 @@ transform-origin: center bottom; cursor: pointer;
 <img src="character.png" alt="배찌" class="bazzi-img" id="bazzi" ontouchstart="handleTouch(event)" onmousedown="handleTouch(event)">
 </div>
 <div class="bottom-interaction-area">
-    <button class="guide-trigger-btn" onclick="startGuide()">면접 안내사항 보기</button>
-    <div class="external-links-row">
-        <a href="https://blog.nexon.com/" target="_blank" class="link-item">
-            <span class="link-tag">#</span>
-            <span>넥슨 소식</span>
-        </a>
-        <a href="https://www.youtube.com/user/NEXONKR" target="_blank" class="link-item">
-            <div class="youtube-mini-icon"></div>
-            <span>넥슨 유튜브</span>
-        </a>
-    </div>
+    <button class="guide-trigger-btn" onclick="startGuide()">면접 안내사항 보기</button>
+    <div class="external-links-row">
+        <a href="https://blog.nexon.com/" target="_blank" class="link-item">
+            <span class="link-tag">#</span>
+            <span>넥슨 소식</span>
+        </a>
+        <a href="https://www.youtube.com/user/NEXONKR" target="_blank" class="link-item">
+            <div class="youtube-mini-icon"></div>
+            <span>넥슨 유튜브</span>
+        </a>
+    </div>
 </div>
 </div>
 </div>
@@ -212,11 +212,11 @@ let currentUserInterviewTime = null;
 let alertTriggered = false;
 
 const guideMessages = [
-    "오늘 면접은 약 1시간 정도\n진행될 예정이에요.",
-    "면접 결과는 합격 여부와 상관없이\n2주 안으로 안내해 드릴게요.",
-    "면접 참가 확인서는 금일 중으로\n메일 발송드릴 예정이니 확인 부탁드려요.",
-    "원활한 면접 진행을 위해 녹음은\n엄격히 금지되어 있으니 양해 부탁드려요.",
-    "소지품을 챙겨 입장 준비를 해주세요."
+    "오늘 면접은 약 1시간 정도\n진행될 예정이에요.",
+    "면접 결과는 합격 여부와 상관없이\n2주 안으로 안내해 드릴게요.",
+    "면접 참가 확인서는 금일 중으로\n메일 발송드릴 예정이니 확인 부탁드려요.",
+    "원활한 면접 진행을 위해 녹음은\n엄격히 금지되어 있으니 양해 부탁드려요.",
+    "소지품을 챙겨 입장 준비를 해주세요."
 ];
 
 async function loadSettings() {
@@ -267,25 +267,25 @@ summaryEl.innerText = `오늘 날짜: ${new Date().toLocaleDateString()} | 면�
 let html = "";
 let lastTime = "";
 data.forEach(u => {
-    if(u.interview_time !== lastTime) {
-        html += `<div class="time-group-header">🕒 ${u.interview_time} 타임테이블</div>`;
-        lastTime = u.interview_time;
-    }
-    
-    const checkInTimeText = u.checked_in && u.checkin_at ? `<span class="u-checktime">[${u.checkin_at} 체크인]</span>` : '';
-    
-    html += `
-    <li class="user-item">
-    <div class="user-info">
-    <span class="u-name">${u.user_name} ${checkInTimeText}</span>
-    <span class="u-detail">${u.job_title || '공고미정'}</span>
-    <span class="u-detail">${u.phone_number}</span>
-    </div>
-    <span class="status-tag ${u.checked_in ? 'status-complete' : 'status-waiting'}">
-    ${u.checked_in ? '완료' : '대기'}
-    </span>
-    </li>
-    `;
+    if(u.interview_time !== lastTime) {
+        html += `<div class="time-group-header">🕒 ${u.interview_time} 타임테이블</div>`;
+        lastTime = u.interview_time;
+    }
+    
+    const checkInTimeText = u.checked_in && u.checkin_at ? `<span class="u-checktime">[${u.checkin_at} 체크인]</span>` : '';
+    
+    html += `
+    <li class="user-item">
+    <div class="user-info">
+    <span class="u-name">${u.user_name} ${checkInTimeText}</span>
+    <span class="u-detail">${u.job_title || '공고미정'}</span>
+    <span class="u-detail">${u.phone_number}</span>
+    </div>
+    <span class="status-tag ${u.checked_in ? 'status-complete' : 'status-waiting'}">
+    ${u.checked_in ? '완료' : '대기'}
+    </span>
+    </li>
+    `;
 });
 listEl.innerHTML = html;
 }
@@ -383,7 +383,7 @@ document.getElementById('dotContainer').innerHTML = guideMessages.map((_, i) => 
 updateSlide(); document.getElementById('infoModal').style.display = 'flex';
 }
 function moveSlide(dir) { currentSlide = (currentSlide + dir + guideMessages.length) % guideMessages.length; updateSlide(); }
-function updateSlide() { document.getElementById('slideContainer').style.transform = `translateX(-${currentSlide * 20}%)`; document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide)); }
+function updateSlide() { document.getElementById('slideContainer').style.transform = `translateX(-${currentSlide * 20}%)`; document.querySelectorAll('.dot').forEach((d, i) d.classList.toggle('active', i === currentSlide)); }
 function showPopup(t, d, c) {
 document.getElementById('modal-title').innerText = t;
 document.getElementById('modal-desc').innerText = d;
