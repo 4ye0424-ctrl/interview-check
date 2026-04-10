@@ -98,13 +98,15 @@ transform-origin: center bottom; cursor: pointer;
 @keyframes jumpAnim { 0% { transform: translateY(0); } 20% { transform: translateY(8px) scale(1.1, 0.9); } 50% { transform: translateY(-55px) scale(0.9, 1.1); } 100% { transform: translateY(0); } }
 .jump-feet { animation: jumpAnim 0.45s ease-out; }
 
-.bottom-interaction-area { margin-top: auto; width: 100%; padding-bottom: 15px; display: flex; flex-direction: column; gap: 12px; }
-.guide-trigger-btn { width: 100%; padding: 16px; border: none; border-radius: 15px; background-color: #333; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
+/* 수정된 하단 영역 CSS */
+.bottom-interaction-area { margin-top: auto; width: 100%; padding-bottom: 15px; display: flex; flex-direction: column; align-items: center; }
+.guide-trigger-btn { width: 100%; padding: 16px; border: none; border-radius: 15px; background-color: #333; color: white; font-weight: bold; font-size: 15px; cursor: pointer; margin-bottom: 15px; }
+.look-around-text { font-size: 12px; font-weight: 700; color: #bbb; margin-bottom: 10px; letter-spacing: 0.5px; }
 .external-links-row { display: flex; gap: 10px; width: 100%; justify-content: center; }
 .link-item { flex: 1; height: 44px; background: white; border: 1px solid #e0e0e0; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.link-item span { font-size: 12px; font-weight: 700; color: #444; margin-top: -1px; } /* 텍스트 위치 미세 조정 */
-.link-tag { font-size: 16px; font-weight: 900; color: var(--primary-color); display: flex; align-items: center; }
-.youtube-mini-icon { width: 16px; height: 12px; background-color: #FF0000; border-radius: 3px; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.link-item span { font-size: 12px; font-weight: 700; color: #444; display: flex; align-items: center; }
+.link-tag { font-size: 16px; font-weight: 900; color: var(--primary-color); display: flex; align-items: center; line-height: 1; margin-top: 1px; }
+.youtube-mini-icon { width: 16px; height: 11px; background-color: #FF0000; border-radius: 3px; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .youtube-mini-icon::after { content: ''; position: absolute; border-left: 4px solid white; border-top: 3px solid transparent; border-bottom: 3px solid transparent; margin-left: 1px; }
 
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 9999; }
@@ -170,8 +172,10 @@ transform-origin: center bottom; cursor: pointer;
 <div class="char-container">
 <img src="character.png" alt="배찌" class="bazzi-img" id="bazzi" ontouchstart="handleTouch(event)" onmousedown="handleTouch(event)">
 </div>
+
 <div class="bottom-interaction-area">
     <button class="guide-trigger-btn" onclick="startGuide()">면접 안내사항 보기</button>
+    <div class="look-around-text">둘러보기</div>
     <div class="external-links-row">
         <a href="https://blog.nexon.com/" target="_blank" class="link-item">
             <span class="link-tag">#</span>
@@ -180,7 +184,7 @@ transform-origin: center bottom; cursor: pointer;
         <a href="https://www.youtube.com/user/NEXONKR" target="_blank" class="link-item">
             <div class="youtube-mini-icon"></div>
             <span>넥슨 유튜브</span>
-      </a>
+        </a>
     </div>
 </div>
 </div>
@@ -271,7 +275,6 @@ summaryEl.innerText = `오늘 날짜: ${new Date().toLocaleDateString()} | 면�
 return;
 }
 
-// 드롭다운 옵션 갱신 (중복 제거)
 const times = [...new Set(data.map(u => u.interview_time))];
 const currentOptions = Array.from(timeFilter.options).map(opt => opt.value);
 times.forEach(t => {
@@ -330,7 +333,6 @@ await _supabase.from('interview_list').delete().neq('user_name', 'SYSTEM_CONFIG'
 const { error } = await _supabase.from('interview_list').insert(formattedData);
 if (error) throw error;
 document.getElementById('data-status').innerText = `${formattedData.length}명의 데이터 로드됨`;
-// 명단 업로드 후 필터 초기화
 document.getElementById('time-filter').innerHTML = '<option value="all">전체 시간 보기</option>';
 showPopup("성공", "명단이 정상적으로 업로드되었어요!");
 } catch (err) { showPopup("오류", "파일을 읽는 중 문제가 생겼어요."); }
