@@ -1,841 +1,442 @@
 <!DOCTYPE html>
-
 <html lang="ko">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 <title>NEXON INTERVIEW - Bazzi Care System</title>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-
 :root {
-
 --primary-color: #4A90E2;
-
 --bg-gray: #f5f7fa;
-
 --char-shadow: rgba(255, 60, 60, 0.4);
-
 --emergency-color: #FF6B6B;
-
 --admin-dark: #1a1a1a;
-
 }
-
-
 
 body {
-
 margin: 0; padding: 0; display: flex; justify-content: center; align-items: center;
-
 min-height: 100vh; background-color: var(--bg-gray);
-
 font-family: 'Pretendard', sans-serif; touch-action: manipulation; overflow: hidden;
-
 }
-
-
 
 .mobile-container {
-
 width: 360px; height: 590px; background: white;
-
 border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-
 position: relative; overflow: hidden; display: flex; flex-direction: column;
-
 }
-
-
 
 input::-webkit-outer-spin-button,
-
 input::-webkit-inner-spin-button {
-
 -webkit-appearance: none;
-
 margin: 0;
-
 }
-
 input[type=number] {
-
 -moz-appearance: textfield;
-
 }
-
-
 
 .screen { width: 100%; height: 100%; padding: 40px 24px; box-sizing: border-box; display: flex; flex-direction: column; transition: filter 0.3s ease; }
-
 .hidden { display: none !important; }
-
 .blur { filter: blur(8px); pointer-events: none; }
 
-
-
 .header { margin-bottom: 35px; text-align: center; }
-
 .header h2 { color: #333; font-size: 24px; font-weight: 800; margin-bottom: 8px; cursor: pointer; user-select: none; }
-
 .input-group { margin-bottom: 20px; }
-
 .input-group label { display: block; font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 600; }
-
 input[type="text"], input[type="tel"], input[type="number"], input[type="password"] {
-
 width: 100%; padding: 15px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 16px; box-sizing: border-box; outline: none; background: white;
-
 }
-
 .submit-btn { margin-top: auto; width: 100%; padding: 18px; border: none; border-radius: 15px; background-color: var(--primary-color); color: white; font-size: 18px; font-weight: bold; cursor: pointer; }
 
-
-
 #admin-screen { background-color: var(--admin-dark); color: white; padding: 30px 20px; position: relative; }
-
 .admin-top { text-align: left; margin-bottom: 10px; }
-
 .admin-top h2 { font-size: 20px; font-weight: 800; margin: 0; color: var(--primary-color); }
-
 .admin-summary { font-size: 12px; color: #aaa; margin-bottom: 20px; }
-
 .admin-menu { display: flex; gap: 15px; margin-bottom: 25px; }
-
 .menu-item { flex: 1; padding: 12px; background: #2d2d2d; border-radius: 12px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; border: 1px solid #444; }
-
 .menu-item.active { background: var(--primary-color); border-color: var(--primary-color); }
-
 .admin-content { flex: 1; overflow-y: auto; }
-
 .admin-card { background: #2d2d2d; border-radius: 15px; padding: 20px; text-align: center; }
-
 .file-label { display: block; background: #444; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-
 .user-list { list-style: none; padding: 0; margin: 0; }
-
 .time-group-header { font-size: 12px; color: var(--primary-color); font-weight: bold; margin: 15px 0 8px 5px; border-left: 3px solid var(--primary-color); padding-left: 8px; background: rgba(74, 144, 226, 0.1); padding: 5px 8px; border-radius: 4px; }
-
 .user-item { background: #2d2d2d; padding: 12px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #3d3d3d; }
-
 .user-info { text-align: left; }
-
 .u-name { font-weight: bold; font-size: 14px; display: block; color: #fff; }
-
 .u-detail { font-size: 11px; color: #888; display: block; line-height: 1.4; }
-
 .u-checktime { font-size: 11px; color: #27ae60; font-weight: bold; }
-
 .status-tag { font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: bold; }
-
 .status-waiting { background: #444; color: #888; }
-
 .status-complete { background: #27ae60; color: white; }
-
 .exit-btn { margin-top: 15px; padding: 15px; background: transparent; border: 1px solid #444; color: #777; border-radius: 12px; cursor: pointer; font-size: 13px; }
-
 .settings-btn { position: absolute; top: 25px; right: 20px; font-size: 18px; color: var(--primary-color); cursor: pointer; z-index: 10; }
 
-
-
-.refresh-area { display: flex; justify-content: flex-end; margin-bottom: 10px; }
-
-.refresh-btn { background: #333; border: 1px solid #444; color: #eee; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: 600; }
-
-
+.refresh-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
+.time-select { flex: 1; background: #333; border: 1px solid #444; color: white; padding: 8px; border-radius: 8px; font-size: 13px; outline: none; }
+.refresh-btn { background: #333; border: 1px solid #444; color: #eee; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: 600; white-space: nowrap; }
 
 #main-screen { background: radial-gradient(circle, #ffffff, #f0f4f8); align-items: center; text-align: center; position: relative; }
-
 .nexon-logo { position: absolute; top: 25px; left: 24px; font-size: 16px; font-weight: 900; color: #333; letter-spacing: -0.5px; }
-
 .nexon-logo span { color: var(--primary-color); }
-
 .call-manager-btn { position: absolute; top: 22px; right: 24px; padding: 6px 10px; background-color: white; border: 1.2px solid var(--emergency-color); border-radius: 20px; color: var(--emergency-color); font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 3px; }
-
 .welcome-header { margin-top: 40px; margin-bottom: 20px; }
-
 .welcome-header h3 { font-size: 20px; color: #333; margin: 0; font-weight: 800; }
-
 .welcome-header p { font-size: 14px; color: #666; margin: 8px 0 0 0; line-height: 1.4; }
-
 .char-container { position: relative; width: 100%; height: 280px; display: flex; justify-content: center; align-items: center; touch-action: none; }
-
 .bazzi-img {
-
 max-width: 80%; max-height: 85%; object-fit: contain;
-
 filter: drop-shadow(0 15px 25px var(--char-shadow));
-
 transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
 transform-origin: center bottom; cursor: pointer;
-
 }
-
 .squash-head { transform: scale(1.15, 0.8) translateY(15px); }
-
 @keyframes squishLeft { to { transform: skewX(-6deg) scaleX(1.05) translateX(8px); } }
-
 .squish-left { animation: squishLeft 0.15s forwards; transform-origin: left center; }
-
 @keyframes squishRight { to { transform: skewX(6deg) scaleX(1.05) translateX(-8px); } }
-
 .squish-right { animation: squishRight 0.15s forwards; transform-origin: right center; }
-
 @keyframes jumpAnim { 0% { transform: translateY(0); } 20% { transform: translateY(8px) scale(1.1, 0.9); } 50% { transform: translateY(-55px) scale(0.9, 1.1); } 100% { transform: translateY(0); } }
-
 .jump-feet { animation: jumpAnim 0.45s ease-out; }
 
-
-
 .bottom-interaction-area { margin-top: auto; width: 100%; padding-bottom: 15px; display: flex; flex-direction: column; gap: 12px; }
-
 .guide-trigger-btn { width: 100%; padding: 16px; border: none; border-radius: 15px; background-color: #333; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
-
 .external-links-row { display: flex; gap: 10px; width: 100%; }
-
 .link-item { flex: 1; background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-
 .link-item span { font-size: 12px; font-weight: 700; color: #444; }
-
 .link-tag { font-size: 16px; font-weight: 900; color: var(--primary-color); }
-
 .youtube-mini-icon { width: 16px; height: 12px; background-color: #FF0000; border-radius: 3px; position: relative; display: flex; align-items: center; justify-content: center; }
-
 .youtube-mini-icon::after { content: ''; position: absolute; border-left: 4px solid white; border-top: 3px solid transparent; border-bottom: 3px solid transparent; margin-left: 1px; }
 
-
-
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 9999; }
-
 .modal-content { width: 280px; background: white; border-radius: 24px; padding: 30px 20px; text-align: center; position: relative; }
-
 .close-x-btn { position: absolute; top: 18px; right: 20px; font-size: 22px; font-weight: bold; color: #999; cursor: pointer; }
-
 .modal-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background-color: var(--primary-color); color: white; font-weight: bold; cursor: pointer; margin-top: 15px; }
 
-
-
 .slide-outer { position: relative; overflow: hidden; width: 100%; margin: 15px 0; }
-
 .slide-container { display: flex; transition: transform 0.4s ease-in-out; width: 500%; }
-
 .slide-page { width: 20%; flex-shrink: 0; padding: 10px 5px; box-sizing: border-box; min-height: 120px; display: flex; align-items: center; justify-content: center; }
-
 .slide-page p { white-space: pre-wrap; line-height: 1.6; font-size: 15px; color: #444; font-weight: 600; margin: 0; word-break: keep-all; }
-
 .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: 1px solid #eee; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; z-index: 10; color: var(--primary-color); display: flex; align-items: center; justify-content: center; }
-
 .prev-btn { left: -5px; } .next-btn { right: -5px; }
-
 .dot-container { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
-
 .dot { width: 7px; height: 7px; border-radius: 50%; background: #ddd; transition: 0.3s; }
-
 .dot.active { background: var(--primary-color); width: 15px; border-radius: 10px; }
-
 </style>
-
 </head>
-
 <body>
 
-
-
 <div class="mobile-container">
-
 <div id="login-screen" class="screen">
-
 <div class="header">
-
 <h2 id="admin-trigger" onclick="adminClickCounter()">NEXON INTERVIEW</h2>
-
 <p>본인 확인을 위해 정보를 입력해 주세요.</p>
-
 </div>
-
 <div class="input-group"><label>성함</label><input type="text" id="name" placeholder="성함을 입력하세요"></div>
-
 <div class="input-group"><label>휴대폰 번호</label><input type="tel" id="phone" placeholder="010-0000-0000"></div>
-
 <button class="submit-btn" onclick="validateAttendance()">출석 체크</button>
-
 </div>
-
-
 
 <div id="admin-screen" class="screen hidden">
-
 <div class="settings-btn" onclick="openSettings()">⚙️</div>
-
 <div class="admin-top"><h2>Admin Mode</h2></div>
-
 <div class="admin-summary" id="admin-summary-text">오늘 날짜: - | 면접 인원: 0명</div>
-
 <div class="admin-menu">
-
 <div class="menu-item active" id="menu-upload" onclick="switchAdminTab('upload')">파일 업로드</div>
-
 <div class="menu-item" id="menu-status" onclick="switchAdminTab('status')">출석 현황</div>
-
 </div>
-
 <div id="tab-upload" class="admin-content">
-
 <div class="admin-card">
-
 <p id="data-status" style="font-size:13px; color:#888">명단 파일을 업로드하세요.</p>
-
 <label for="excel-upload" class="file-label">파일 선택</label>
-
 <input type="file" id="excel-upload" accept=".xlsx, .xls" style="display:none">
-
 </div>
-
 </div>
-
 <div id="tab-status" class="admin-content hidden">
-
-<div class="refresh-area"><button class="refresh-btn" onclick="renderAdminList()">🔄 새로고침</button></div>
-
+<div class="refresh-area">
+<select id="time-filter" class="time-select" onchange="renderAdminList()">
+<option value="all">전체 시간 보기</option>
+</select>
+<button class="refresh-btn" onclick="renderAdminList()">🔄 새로고침</button>
+</div>
 <ul class="user-list" id="admin-user-list"></ul>
-
 </div>
-
 <button class="exit-btn" onclick="exitAdmin()">사용자 화면으로 돌아가기</button>
-
 </div>
-
-
 
 <div id="main-screen" class="screen hidden">
-
 <div class="nexon-logo">NEXON <span>Squishy</span></div>
-
 <button class="call-manager-btn" onclick="openCallModal()">🚨 호출</button>
-
 <div class="welcome-header"><h3 id="welcome-user">000님, 반갑습니다!</h3><p>배찌를 눌러 긴장을 풀어보세요.</p></div>
-
 <div class="char-container">
-
 <img src="character.png" alt="배찌" class="bazzi-img" id="bazzi" ontouchstart="handleTouch(event)" onmousedown="handleTouch(event)">
-
 </div>
-
 <div class="bottom-interaction-area">
-
-    <button class="guide-trigger-btn" onclick="startGuide()">면접 안내사항 보기</button>
-
-    <div class="external-links-row">
-
-        <a href="https://blog.nexon.com/" target="_blank" class="link-item">
-
-            <span class="link-tag">#</span>
-
-            <span>넥슨 소식</span>
-
-        </a>
-
-        <a href="https://www.youtube.com/user/NEXONKR" target="_blank" class="link-item">
-
-            <div class="youtube-mini-icon"></div>
-
-            <span>넥슨 유튜브</span>
-
-        </a>
-
-    </div>
-
+    <button class="guide-trigger-btn" onclick="startGuide()">면접 안내사항 보기</button>
+    <div class="external-links-row">
+        <a href="https://blog.nexon.com/" target="_blank" class="link-item">
+            <span class="link-tag">#</span>
+            <span>넥슨 소식</span>
+        </a>
+        <a href="https://www.youtube.com/user/NEXONKR" target="_blank" class="link-item">
+            <div class="youtube-mini-icon"></div>
+            <span>넥슨 유튜브</span>
+      </a>
+    </div>
 </div>
-
 </div>
-
 </div>
-
-
 
 <div class="modal-overlay" id="infoModal">
-
 <div class="modal-content">
-
 <div class="close-x-btn" id="closeX" onclick="closeByX()">✕</div>
-
 <h3 id="modal-title">안내</h3>
-
 <div id="slide-wrapper" class="hidden">
-
 <div class="slide-outer">
-
 <button class="nav-btn prev-btn" onclick="moveSlide(-1)">❮</button>
-
 <button class="nav-btn next-btn" onclick="moveSlide(1)">❯</button>
-
 <div class="slide-container" id="slideContainer"></div>
-
 </div>
-
 <div class="dot-container" id="dotContainer"></div>
-
 </div>
-
 <div id="modal-input-area" class="hidden" style="margin: 15px 0;">
-
 <input type="password" id="admin-password-input" placeholder="비밀번호 입력" style="text-align: center;">
-
 </div>
-
 <p id="modal-desc" style="color:#666; line-height:1.6; font-size:15px; word-break:keep-all; white-space: pre-wrap;"></p>
-
 <button class="modal-btn" id="confirmBtn" onclick="closeModal()">확인</button>
-
 </div>
-
 </div>
-
-
 
 <script>
-
 const supabaseUrl = 'https://yccemofujngavovwecdo.supabase.co';
-
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InljY2Vtb2Z1am5nYXZvdndlY2RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NDI0NTEsImV4cCI6MjA5MTExODQ1MX0.LjRqpR4n6As6A9TR5-8_CTachNMGiW2HrgMUsVDirp0';
-
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-
-
 let adminPassword = "nexon123";
-
 let currentSlide = 0;
-
 let clickCount = 0;
-
 let currentUserInterviewTime = null;
-
 let alertTriggered = false;
 
-
-
 const guideMessages = [
-
-    "오늘 면접은 약 1시간 정도\n진행될 예정이에요!",
-
-    "면접 결과는 합격 여부와 상관없이\n2주 안으로 안내해 드릴게요.",
-
-    "면접 참가 확인서는 오늘 중으로\n메일로 발송해 드릴 예정이에요.",
-
-    "보안을 위해 면접 내용을 녹음하는 건\n엄격히 금지되어 있으니\n양해 부탁드려요.",
-
-    "소지품은 챙겨서\n입장 준비를 해주세요."
-
+    "오늘 면접은 약 1시간 정도\n진행될 예정이에요!",
+    "면접 결과는 합격 여부와 상관없이\n2주 안으로 안내해 드릴게요.",
+    "면접 참가 확인서는 오늘 중으로\n메일로 발송해 드릴 예정이에요.",
+    "보안을 위해 면접 내용을 녹음하는 건\n엄격히 금지되어 있으니\n양해 부탁드려요.",
+    "소지품은 챙겨서\n입장 준비를 해주세요."
 ];
 
-
-
 async function loadSettings() {
-
 const { data } = await _supabase.from('interview_list').select('*').eq('user_name', 'SYSTEM_CONFIG').single();
-
 if(data) adminPassword = data.phone_number;
-
 }
-
 loadSettings();
-
-
 
 setInterval(checkInterviewTime, 10000);
 
-
-
 function checkInterviewTime() {
-
 if (!currentUserInterviewTime || alertTriggered) return;
-
 const now = new Date();
-
 const timeMatch = currentUserInterviewTime.match(/(\d{1,2})[:시]\s*(\d{2})?/);
-
 if (!timeMatch) return;
-
 let targetHour = parseInt(timeMatch[1]);
-
 let targetMin = timeMatch[2] ? parseInt(timeMatch[2]) : 0;
-
 const targetDate = new Date();
-
 targetDate.setHours(targetHour, targetMin, 0);
-
 const diffMin = (targetDate - now) / (1000 * 60);
-
 if (diffMin > 0 && diffMin <= 5) {
-
 alertTriggered = true;
-
 showPopup("대기 안내", "면접 시작 5분 전이에요!\n짐을 챙겨서 잠시만 대기해 주세요.");
-
 }
-
 }
-
-
 
 function switchAdminTab(tab) {
-
 document.getElementById('menu-upload').classList.toggle('active', tab === 'upload');
-
 document.getElementById('menu-status').classList.toggle('active', tab === 'status');
-
 document.getElementById('tab-upload').classList.toggle('hidden', tab !== 'upload');
-
 document.getElementById('tab-status').classList.toggle('hidden', tab !== 'status');
-
 if(tab === 'status') renderAdminList();
-
 }
 
-
-
 async function renderAdminList() {
-
 const listEl = document.getElementById('admin-user-list');
-
 const summaryEl = document.getElementById('admin-summary-text');
+const timeFilter = document.getElementById('time-filter');
+const selectedTime = timeFilter.value;
 
 const { data, error } = await _supabase.from('interview_list').select('*').neq('user_name', 'SYSTEM_CONFIG').order('interview_time', { ascending: true });
 
-
-
 if(error || !data || data.length === 0) {
-
 listEl.innerHTML = '<p style="text-align:center; font-size:13px; color:#555; margin-top:20px;">업로드된 명단이 없습니다.</p>';
-
 summaryEl.innerText = `오늘 날짜: ${new Date().toLocaleDateString()} | 면접 인원: 0명`;
-
 return;
-
 }
 
-
+// 드롭다운 옵션 갱신 (중복 제거)
+const times = [...new Set(data.map(u => u.interview_time))];
+const currentOptions = Array.from(timeFilter.options).map(opt => opt.value);
+times.forEach(t => {
+if(!currentOptions.includes(t)) {
+const opt = document.createElement('option');
+opt.value = t; opt.innerText = t;
+timeFilter.appendChild(opt);
+}
+});
 
 summaryEl.innerText = `오늘 날짜: ${new Date().toLocaleDateString()} | 면접 인원: ${data.length}명`;
 
-
-
 let html = "";
+const filteredData = selectedTime === 'all' ? data : data.filter(u => u.interview_time === selectedTime);
 
-let lastTime = "";
-
-data.forEach(u => {
-
-    // 시간대별 타임테이블 카테고리 생성
-
-    if(u.interview_time !== lastTime) {
-
-        html += `<div class="time-group-header">🕒 ${u.interview_time} 타임테이블</div>`;
-
-        lastTime = u.interview_time;
-
-    }
-
-    
-
-    const checkInTimeText = u.checked_in && u.checkin_at ? `<span class="u-checktime">[${u.checkin_at} 체크인]</span>` : '';
-
-    
-
-    html += `
-
-    <li class="user-item">
-
-    <div class="user-info">
-
-    <span class="u-name">${u.user_name} ${checkInTimeText}</span>
-
-    <span class="u-detail">${u.job_title || '공고미정'}</span>
-
-    <span class="u-detail">${u.phone_number}</span>
-
-    </div>
-
-    <span class="status-tag ${u.checked_in ? 'status-complete' : 'status-waiting'}">
-
-    ${u.checked_in ? '완료' : '대기'}
-
-    </span>
-
-    </li>
-
-    `;
-
+if(filteredData.length === 0) {
+html = '<p style="text-align:center; font-size:13px; color:#555; margin-top:20px;">해당 시간의 명단이 없습니다.</p>';
+} else {
+filteredData.forEach(u => {
+const checkInTimeText = u.checked_in && u.checkin_at ? `<span class="u-checktime">[${u.checkin_at} 체크인]</span>` : '';
+html += `
+<li class="user-item">
+<div class="user-info">
+<span class="u-name">${u.user_name} ${checkInTimeText}</span>
+<span class="u-detail">${u.job_title || '공고미정'}</span>
+<span class="u-detail">${u.phone_number}</span>
+<span class="u-detail" style="color:var(--primary-color)">시간: ${u.interview_time}</span>
+</div>
+<span class="status-tag ${u.checked_in ? 'status-complete' : 'status-waiting'}">
+${u.checked_in ? '완료' : '대기'}
+</span>
+</li>
+`;
 });
-
-listEl.innerHTML = html;
-
 }
-
-
+listEl.innerHTML = html;
+}
 
 document.getElementById('excel-upload').addEventListener('change', function(e) {
-
 const file = e.target.files[0];
-
 const reader = new FileReader();
-
 reader.onload = async function(event) {
-
 try {
-
 const data = new Uint8Array(event.target.result);
-
 const workbook = XLSX.read(data, {type: 'array'});
-
 const rawData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-
 const keys = Object.keys(rawData[0]);
-
 const formattedData = rawData.map(row => ({
-
 user_name: String(row[keys.find(k => k.includes('성함') || k.includes('이름'))] || '').trim(),
-
 phone_number: String(row[keys.find(k => k.includes('번호') || k.includes('연락처'))] || '').trim(),
-
 job_title: String(row[keys.find(k => k.includes('공고') || k.includes('포지션'))] || '').trim(),
-
 interview_time: String(row[keys.find(k => k.includes('시간'))] || '').trim(),
-
 checked_in: false
-
 }));
-
 await _supabase.from('interview_list').delete().neq('user_name', 'SYSTEM_CONFIG');
-
 const { error } = await _supabase.from('interview_list').insert(formattedData);
-
 if (error) throw error;
-
 document.getElementById('data-status').innerText = `${formattedData.length}명의 데이터 로드됨`;
-
+// 명단 업로드 후 필터 초기화
+document.getElementById('time-filter').innerHTML = '<option value="all">전체 시간 보기</option>';
 showPopup("성공", "명단이 정상적으로 업로드되었어요!");
-
 } catch (err) { showPopup("오류", "파일을 읽는 중 문제가 생겼어요."); }
-
 };
-
 reader.readAsArrayBuffer(file);
-
 });
-
-
 
 async function validateAttendance() {
-
 const nameInput = document.getElementById('name').value.trim();
-
 const phoneInput = document.getElementById('phone').value.trim();
-
 if(!nameInput || !phoneInput) { showPopup("알림", "정보를 모두 입력해 주세요!"); return; }
-
 const { data } = await _supabase.from('interview_list').select('*').eq('user_name', nameInput);
-
 const user = data?.find(u => u.phone_number.replace(/-/g,'') === phoneInput.replace(/-/g,''));
-
 if(user) {
-
 const job = user.job_title || "지원 공고";
-
 const time = user.interview_time || "안내된 시간";
-
 currentUserInterviewTime = time;
-
 showPopup("출석 확인", `성함: ${user.user_name}\n공고: ${job}\n시간: ${time}\n\n입력하신 정보가 맞을까요?`, async () => {
-
 const nowTime = new Date().toLocaleTimeString('ko-KR', { hour12: false, hour: '2-digit', minute: '2-digit' });
-
 await _supabase.from('interview_list').update({ checked_in: true, checkin_at: nowTime }).eq('id', user.id);
-
 goToMainScreen(user.user_name);
-
 });
-
 document.getElementById('confirmBtn').innerText = "네, 맞아요!";
-
 } else { showPopup("실패", "일치하는 면접자 정보가 없어요."); }
-
 }
-
-
 
 function adminClickCounter() {
-
 if(++clickCount >= 5) {
-
 clickCount = 0;
-
 document.getElementById('modal-input-area').classList.remove('hidden');
-
 document.getElementById('admin-password-input').value = "";
-
 showPopup("Admin Access", "관리자 비밀번호를 입력해 주세요.", () => {
-
 if(document.getElementById('admin-password-input').value === adminPassword) {
-
 document.getElementById('login-screen').classList.add('hidden');
-
 document.getElementById('admin-screen').classList.remove('hidden');
-
 } else { showPopup("오류", "비밀번호가 틀렸습니다."); }
-
 document.getElementById('modal-input-area').classList.add('hidden');
-
 });
-
 }
-
 }
-
-
 
 function openSettings() {
-
 document.getElementById('modal-input-area').classList.remove('hidden');
-
 document.getElementById('admin-password-input').value = "";
-
 showPopup("비밀번호 변경", "새로 사용할 관리자 비밀번호를 입력하세요.", async () => {
-
 const newPw = document.getElementById('admin-password-input').value;
-
 if(newPw.length < 1) return;
-
 await _supabase.from('interview_list').upsert({ user_name: 'SYSTEM_CONFIG', phone_number: newPw });
-
 adminPassword = newPw;
-
 alert("비밀번호가 변경되었습니다.");
-
 document.getElementById('modal-input-area').classList.add('hidden');
-
 });
-
 }
-
-
 
 function exitAdmin() { document.getElementById('admin-screen').classList.add('hidden'); document.getElementById('login-screen').classList.remove('hidden'); }
-
 function goToMainScreen(name) { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('main-screen').classList.remove('hidden'); document.getElementById('welcome-user').innerText = `${name}님, 반가워요!`; }
 
-
-
 function openCallModal() {
-
 showPopup("담당자 호출", "도움이 필요하신가요?\n담당자님을 바로 불러드릴게요!", () => {
-
 setTimeout(() => showPopup("전송 완료", "담당자님께 알림을 보냈어요.\n잠시만 기다려 주세요!", null), 100);
-
 });
-
 document.getElementById('confirmBtn').innerText = "담당자 호출하기";
-
 document.getElementById('closeX').style.display = 'block';
-
 }
-
-
 
 function startGuide() {
-
 currentSlide = 0; document.getElementById('modal-title').innerText = "💡안내 사항💡";
-
 document.getElementById('modal-desc').classList.add('hidden'); document.getElementById('confirmBtn').classList.add('hidden');
-
 document.getElementById('closeX').style.display = 'block'; document.getElementById('slide-wrapper').classList.remove('hidden');
-
 document.getElementById('slideContainer').innerHTML = guideMessages.map(m => `<div class="slide-page"><p>${m}</p></div>`).join('');
-
 document.getElementById('dotContainer').innerHTML = guideMessages.map((_, i) => `<div class="dot ${i===0?'active':''}"></div>`).join('');
-
 updateSlide(); document.getElementById('infoModal').style.display = 'flex';
-
 }
-
 function moveSlide(dir) { currentSlide = (currentSlide + dir + guideMessages.length) % guideMessages.length; updateSlide(); }
-
 function updateSlide() { document.getElementById('slideContainer').style.transform = `translateX(-${currentSlide * 20}%)`; document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide)); }
-
 function showPopup(t, d, c) {
-
 document.getElementById('modal-title').innerText = t;
-
 document.getElementById('modal-desc').innerText = d;
-
 document.getElementById('modal-desc').classList.remove('hidden');
-
 document.getElementById('slide-wrapper').classList.add('hidden');
-
 document.getElementById('confirmBtn').classList.remove('hidden');
-
 document.getElementById('confirmBtn').innerText = "확인";
-
 document.getElementById('closeX').style.display = 'none';
-
 document.getElementById('infoModal').style.display = 'flex';
-
 window.currentCallback = c;
-
 }
-
 function closeModal() { const cb = window.currentCallback; window.currentCallback = null; document.getElementById('infoModal').style.display = 'none'; if(cb) cb(); }
-
 function closeByX() { document.getElementById('infoModal').style.display = 'none'; document.getElementById('modal-input-area').classList.add('hidden'); }
 
-
-
 function handleTouch(event) {
-
 if(event.type === 'touchstart') event.preventDefault();
-
 const bazzi = document.getElementById('bazzi');
-
 const rect = bazzi.getBoundingClientRect();
-
 const clientX = event.type === 'touchstart' ? event.touches[0].clientX : event.clientX;
-
 const clientY = event.type === 'touchstart' ? event.touches[0].clientY : event.clientY;
-
 const relX = (clientX - rect.left) / rect.width;
-
 const relY = (clientY - rect.top) / rect.height;
-
 bazzi.classList.remove('squash-head', 'squish-left', 'squish-right', 'jump-feet');
-
 void bazzi.offsetWidth;
-
 if (relY < 0.3) bazzi.classList.add('squash-head');
-
 else if (relY > 0.7) bazzi.classList.add('jump-feet');
-
 else if (relX < 0.5) bazzi.classList.add('squish-left');
-
 else bazzi.classList.add('squish-right');
-
 const release = () => { bazzi.classList.remove('squash-head'); window.removeEventListener('mouseup', release); window.removeEventListener('touchend', release); };
-
 window.addEventListener('mouseup', release); window.addEventListener('touchend', release);
-
 }
-
 </script>
-
 </body>
-
 </html>
